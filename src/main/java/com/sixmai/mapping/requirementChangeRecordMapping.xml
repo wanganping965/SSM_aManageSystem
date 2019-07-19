@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sixmai.mapper.RequirementChangeRecordMapper">
+    <!--因为数据库表中储存了所有的记录，新增的或者更改的历史版本都在数据库中，-->
+    <!--所以每次查询的时候，查询当前需求所有历史变更版本中的最新一条进行展示即可-->
+    <select id="findAllRequirement" resultType="com.sixmai.domain.RequirementChangeRecord">
+        SELECT t.*
+        FROM (SELECT * FROM requirementChangeRecord
+              ORDER BY record_update_time DESC limit 10000000000) t
+        GROUP BY t.demand_id
+    </select>
+
+    <select id="findAllRequirementByOwnedTeam" resultType="com.sixmai.domain.RequirementChangeRecord">
+        SELECT t.*
+        FROM (SELECT * FROM requirementChangeRecord
+              WHERE team_responsible_for=#{role}
+              ORDER BY record_update_time DESC limit 10000000000) t
+        GROUP BY t.demand_id
+    </select>
+
+    <select id="findAllRequirementByAndUsername" resultType="com.sixmai.domain.RequirementChangeRecord">
+        SELECT t.*
+        FROM (SELECT * FROM requirementChangeRecord
+              WHERE team_responsible_for=#{role} AND user_last_changed=#{username}
+              ORDER BY record_update_time DESC limit 10000000000) t
+        GROUP BY t.demand_id
+    </select>
+
+    <select id="findRequirementRecordsByDemand_id" resultType="com.sixmai.domain.RequirementChangeRecord">
+        SELECT * FROM requirementChangeRecord
+        WHERE demand_id=#{demand_id} ORDER BY record_update_time DESC
+    </select>
+
+    <select id="findRequirementRecordsById" resultType="com.sixmai.domain.RequirementChangeRecord" parameterType="int">
+        SELECT * FROM requirementChangeRecord
+        WHERE id = #{id}
+    </select>
+    
+    <insert id="addRequirementRecord" parameterType="com.sixmai.domain.RequirementChangeRecord">
+        INSERT INTO requirementChangeRecord(
+        demand_id,
+        demand_name,
+        demand_details,
+        demand_class,
+        demand_content,
+        priority,
+        priority_desc,
+        business_value,
+        demand_status,
+        batch,
+        business_department,
+        business_team,
+        leadOrCooperate,
+        product_name,
+        version_status,
+        workload,
+        external_workload,
+        vender_workload,
+        development_model,
+        main_product_situation,
+        demand_leader,
+        development_leader,
+        task_code,
+        project_code,
+        is_newAddResources,
+        is_dataTransfer,
+        is_performanceTest,
+        update_date,
+        technicalPlan_desc,
+        task_type,
+        UAT_versionNumber,
+        official_versionNumber,
+        shedule_functionTestVersion_finish,
+        shedule_officialVersion_submit,
+        date_of_production,
+        lastest_progress,
+        description,
+        team_responsible_for,
+        user_last_changed,
+        record_update_time
+        )
+        VALUES (
+        #{demand_id},
+        #{demand_name},
+        #{demand_details},
+        #{demand_class},
+        #{demand_content},
+        #{priority},
+        #{priority_desc},
+        #{business_value},
+        #{demand_status},
+        #{batch},
+        #{business_department},
+        #{business_team},
+        #{leadOrCooperate},
+        #{product_name},
+        #{version_status},
+        #{workload},
+        #{external_workload},
+        #{vender_workload},
+        #{development_model},
+        #{main_product_situation},
+        #{demand_leader},
+        #{development_leader},
+        #{task_code},
+        #{project_code},
+        #{is_newAddResources},
+        #{is_dataTransfer},
+        #{is_performanceTest},
+        #{update_date},
+        #{technicalPlan_desc},
+        #{task_type},
+        #{UAT_versionNumber},
+        #{official_versionNumber},
+        #{shedule_functionTestVersion_finish},
+        #{shedule_officialVersion_submit},
+        #{date_of_production},
+        #{lastest_progress},
+        #{description},
+        #{team_responsible_for},
+        #{user_last_changed},
+        #{record_update_time}
+        )
+    </insert>
+
+    <update id="changeRequirementRecordById" parameterType="com.sixmai.domain.RequirementChangeRecord">
+        UPDATE requirementChangeRecord
+        <set>
+            <if test="demand_name != null and demand_name != ''">
+                demand_name=#{demand_name},
+            </if>
+            <if test="demand_details != null and demand_details != ''">
+                demand_details = #{demand_details},
+            </if>
+            <if test="demand_class != null and demand_class != ''">
+                demand_class = #{demand_class},
+            </if>
+            <if test="demand_content != null and demand_content != ''">
+                demand_content = #{demand_content},
+            </if>
+            priority = #{priority},
+            priority_desc = #{priority_desc},
+
+            <if test="business_value != null and business_value != ''">
+                business_value = #{business_value},
+            </if>
+            demand_status = #{demand_status},
+            batch = #{batch},
+
+            <if test="business_department != null and business_department != ''">
+                business_department = #{business_department},
+            </if>
+            <if test="business_team != null and business_team != ''">
+                business_team = #{business_team},
+            </if>
+            leadOrCooperate = #{leadOrCooperate},
+            <if test="product_name != null and product_name != ''">
+                product_name = #{product_name},
+            </if>
+            version_status = #{version_status},
+
+            <if test="workload != null and workload != ''">
+                workload = #{workload},
+            </if>
+            <if test="external_workload != null and external_workload != ''">
+                external_workload = #{external_workload},
+            </if>
+            <if test="vender_workload != null and vender_workload != ''">
+                vender_workload = #{vender_workload},
+            </if>
+            development_model = #{development_model},
+            <if test="main_product_situation != null and main_product_situation != ''">
+                main_product_situation = #{main_product_situation},
+            </if>
+            <if test="demand_leader != null and demand_leader != ''">
+                demand_leader = #{demand_leader},
+            </if>
+            <if test="development_leader != null and development_leader != ''">
+                development_leader = #{development_leader},
+            </if>
+            <if test="task_code != null and task_code != ''">
+                task_code = #{task_code},
+            </if>
+            <if test="project_code != null and project_code != ''">
+                project_code = #{project_code},
+            </if>
+            is_newAddResources = #{is_newAddResources},
+            is_dataTransfer = #{is_dataTransfer},
+            is_performanceTest = #{is_performanceTest},
+            update_date = #{update_date},
+            <if test="technicalPlan_desc != null and technicalPlan_desc != ''">
+                technicalPlan_desc = #{technicalPlan_desc},
+            </if>
+            task_type = #{task_type},
+            <if test="UAT_versionNumber != null and UAT_versionNumber != ''">
+                UAT_versionNumber = #{UAT_versionNumber},
+            </if>
+            <if test="official_versionNumber != null and official_versionNumber != ''">
+                official_versionNumber = #{official_versionNumber},
+            </if>
+            shedule_functionTestVersion_finish = #{shedule_functionTestVersion_finish},
+            shedule_officialVersion_submit = #{shedule_officialVersion_submit},
+            date_of_production = #{date_of_production},
+
+            <if test="lastest_progress != null and lastest_progress != ''">
+                lastest_progress = #{lastest_progress},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            team_responsible_for = #{team_responsible_for},
+            <if test="user_last_changed != null and user_last_changed != ''">
+                user_last_changed = #{user_last_changed},
+            </if>
+            record_update_time = #{record_update_time}
+        </set>
+            WHERE id = #{id} and demand_id = #{demand_id}
+    </update>
+
+    <delete id="deleteRequirementRecordByDemand_id" parameterType="String">
+        DELETE FROM requirementChangeRecord
+              WHERE demand_id = #{demand_id}
+    </delete>
+    <delete id="deleteRequirementRecordById" parameterType="int">
+        DELETE FROM requirementChangeRecord
+        WHERE id = #{id}
+    </delete>
+</mapper>
