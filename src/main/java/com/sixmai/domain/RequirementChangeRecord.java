@@ -7,6 +7,7 @@ import java.sql.Timestamp;
  * Created by 未来人来xw on 2019/7/18.
  */
 public class RequirementChangeRecord {
+    private int id;
     private String demand_id;
     private String demand_name;
     private String demand_details;
@@ -39,6 +40,7 @@ public class RequirementChangeRecord {
     private int task_type;
     private String UAT_versionNumber;
     private String official_versionNumber;
+    private Date shedule_functionTestVersion_submit;
     private Date shedule_functionTestVersion_finish;
     private Date shedule_officialVersion_submit;
     private Date date_of_production;
@@ -51,6 +53,7 @@ public class RequirementChangeRecord {
     @Override
     public String toString() {
         return "RequirementChangeRecord{" +
+                "id='" + id + '\'' +
                 "demand_id='" + demand_id + '\'' +
                 ", demand_name='" + demand_name + '\'' +
                 ", demand_details='" + demand_details + '\'' +
@@ -83,6 +86,7 @@ public class RequirementChangeRecord {
                 ", task_type=" + task_type +
                 ", UAT_versionNumber='" + UAT_versionNumber + '\'' +
                 ", official_versionNumber='" + official_versionNumber + '\'' +
+                ", shedule_functionTestVersion_submit=" + shedule_functionTestVersion_submit +
                 ", shedule_functionTestVersion_finish=" + shedule_functionTestVersion_finish +
                 ", shedule_officialVersion_submit=" + shedule_officialVersion_submit +
                 ", date_of_production=" + date_of_production +
@@ -94,7 +98,16 @@ public class RequirementChangeRecord {
                 '}';
     }
 
-    public void setAll(String demand_id,
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAll(int id,
+                       String demand_id,
                        String demand_name,
                        String demand_details,
                        String demand_class,
@@ -126,6 +139,7 @@ public class RequirementChangeRecord {
                        int task_type,
                        String UAT_versionNumber,
                        String official_versionNumber,
+                       Date shedule_functionTestVersion_submit,
                        Date shedule_functionTestVersion_finish,
                        Date shedule_officialVersion_submit,
                        Date date_of_production,
@@ -136,6 +150,7 @@ public class RequirementChangeRecord {
                        Timestamp record_update_time
                        )
     {
+        setId(id);
         setDemand_id(demand_id);
         setDemand_name(demand_name);
         setDemand_details(demand_details);
@@ -168,6 +183,7 @@ public class RequirementChangeRecord {
         setTask_type(task_type);
         setUAT_versionNumber(UAT_versionNumber);
         setOfficial_versionNumber(official_versionNumber);
+        setShedule_functionTestVersion_submit(shedule_functionTestVersion_submit);
         setShedule_functionTestVersion_finish(shedule_functionTestVersion_finish);
         setShedule_officialVersion_submit(shedule_officialVersion_submit);
         setDate_of_production(date_of_production);
@@ -176,6 +192,14 @@ public class RequirementChangeRecord {
         setTeam_responsible_for(team_responsible_for);
         setUser_last_changed(user_last_changed);
         setRecord_update_time(record_update_time);
+    }
+
+    public Date getShedule_functionTestVersion_submit() {
+        return shedule_functionTestVersion_submit;
+    }
+
+    public void setShedule_functionTestVersion_submit(Date shedule_functionTestVersion_submit) {
+        this.shedule_functionTestVersion_submit = shedule_functionTestVersion_submit;
     }
 
     public String getDemand_id() {

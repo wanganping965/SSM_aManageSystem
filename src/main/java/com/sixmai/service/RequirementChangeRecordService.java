@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 未来人来xw on 2019/7/18.
@@ -25,13 +26,15 @@ public interface RequirementChangeRecordService {
                                  String project_code, String is_newAddResources, String is_dataTransfer,
                                  String is_performanceTest, String update_date, String technicalPlan_desc,
                                  String task_type, String UAT_versionNumber, String official_versionNumber,
+                                 String shedule_functionTestVersion_submit,
                                  String shedule_functionTestVersion_finish, String shedule_officialVersion_submit,
                                  String data_of_production, String lastest_progress, String description,
                                  String team_responsible_for, String user_last_changed,String record_update_time);
     // *********************** 查看 ***********************
-    ArrayList<ArrayList<String>> findAllRequirementsRecord();
-    ArrayList<ArrayList<String>> findAllRequirementByOwnedTeam(String role);
-    ArrayList<ArrayList<String>> findAllRequirementByAndUsername(String role,String username);
+    ArrayList<Map<String, Object>> findAllRequirementsRecord(String page, String rows);
+    ArrayList<Map<String, Object>> findAllRequirementByOwnedTeam(String role,String page,String rows);
+    ArrayList<Map<String, Object>> findAllRequirementByAndUsername(String role,String username,String page,String rows);
+    int getTotalFoundRecordNumbers();
 
     //获取真个需求的变更的历史版本的列表，从上到下依次为最近依次更改和最开始登入的需求
     ArrayList<ArrayList<String>> findThisRequirementHistoryVersion(String demand_id);

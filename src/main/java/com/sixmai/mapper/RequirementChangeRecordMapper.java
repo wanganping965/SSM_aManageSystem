@@ -9,11 +9,16 @@ import java.util.List;
  */
 public interface RequirementChangeRecordMapper {
     // 用于展示所用的需求变更数据
-    List<RequirementChangeRecord> findAllRequirement();
+    List<RequirementChangeRecord> findAllRequirement(int start,int rows);
+//    int findTheNumberOfAllRequirement();
+    int getTotalFoundRecordNumber();
     //用于获取本团队的所有能处理的需求
-    List<RequirementChangeRecord> findAllRequirementByOwnedTeam(int role);
+    List<RequirementChangeRecord> findAllRequirementByOwnedTeam(int role,int start,int rows);
+//    int findTheNumberOfAllRequirementByOwnedTeam(int role);
+
     //用于获取本账号处理过的需求记录
-    List<RequirementChangeRecord> findAllRequirementByAndUsername(int role,String username);
+    List<RequirementChangeRecord> findAllRequirementByAndUsername(int role,String username,int start,int rows);
+//    int findTheNumberOfAllRequirementByAndUsername(int role,String username);
 
     //获取同一需求编号的历史变更版本列表
     List<RequirementChangeRecord> findRequirementRecordsByDemand_id(String demand_id);

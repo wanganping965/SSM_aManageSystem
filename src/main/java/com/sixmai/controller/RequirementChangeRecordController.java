@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 
 import com.sixmai.domain.RequirementChangeRecord;
 import com.sixmai.service.RequirementChangeRecordService;
+import org.aspectj.apache.bcel.util.ClassLoaderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by 未来人来xw on 2019/7/18.
@@ -34,29 +37,51 @@ public class RequirementChangeRecordController {
      *                   返回从数据库获取的数据，以json字符串的形式返回
      *     *********************************************************************
      */
-    @RequestMapping(value = "/getAllRecordList",method = RequestMethod.GET)
+    @RequestMapping(value = "/getAllRecordList")
     @ResponseBody
-    public String getAllRequirementRecordList()
+    public Map<String,Object> getAllRequirementRecordList(HttpServletRequest request)
     {
-        ArrayList<ArrayList<String>> recordList = requirementChangeRecordService.findAllRequirementsRecord();
-        String jsonData = JSON.toJSONString(recordList);
-        return jsonData;
+        // 页码和每页记录的条数
+        String start = request.getParameter("page");
+        String rows = request.getParameter("rows");
+
+        ArrayList<Map<String,Object>> rowsData = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
+        int total = requirementChangeRecordService.getTotalFoundRecordNumbers();
+        Map<String,Object> jsonMap = new HashMap<String, Object>();
+        jsonMap.put("total",total);
+        jsonMap.put("rows",rowsData);
+
+        return jsonMap;
     }
     @RequestMapping(value = "/getOurTeamRecordList",method = RequestMethod.GET)
     @ResponseBody
-    public String getOurTeamRecordList(@ModelAttribute("role") int role)
+    public Map<String, Object> getOurTeamRecordList(@ModelAttribute("role") int role,HttpServletRequest request)
     {
-        ArrayList<ArrayList<String>> recordList = requirementChangeRecordService.findAllRequirementByOwnedTeam(""+role);
-        String jsonData = JSON.toJSONString(recordList);
-        return jsonData;
+        // 页码和每页记录的条数
+        String start = request.getParameter("page");
+        String rows = request.getParameter("rows");
+        ArrayList<Map<String,Object>> rowsData = requirementChangeRecordService.findAllRequirementByOwnedTeam(""+role,start,rows);
+        int total = requirementChangeRecordService.getTotalFoundRecordNumbers();
+        Map<String,Object> jsonMap = new HashMap<String, Object>();
+        jsonMap.put("total",total);
+        jsonMap.put("rows",rowsData);
+
+        return jsonMap;
     }
     @RequestMapping(value = "/getRecordListRelatedToThisUsername",method = RequestMethod.GET)
     @ResponseBody
-    public String getRecordListRelatedToThisUsername(@ModelAttribute("username") String username,@ModelAttribute("role") int role)
+    public Map<String,Object> getRecordListRelatedToThisUsername(@ModelAttribute("username") String username,@ModelAttribute("role") int role,HttpServletRequest request)
     {
-        ArrayList<ArrayList<String>> recordList = requirementChangeRecordService.findAllRequirementByAndUsername(""+role,username);
-        String jsonData = JSON.toJSONString(recordList);
-        return jsonData;
+        // 页码和每页记录的条数
+        String start = request.getParameter("page");
+        String rows = request.getParameter("rows");
+        ArrayList<Map<String,Object>> rowsData = requirementChangeRecordService.findAllRequirementByAndUsername(""+role,username,start,rows);
+        int total = requirementChangeRecordService.getTotalFoundRecordNumbers();
+        Map<String,Object> jsonMap = new HashMap<String, Object>();
+        jsonMap.put("total",total);
+        jsonMap.put("rows",rowsData);
+
+        return jsonMap;
     }
 
     @RequestMapping(value = "/thisRecordDetails",method = RequestMethod.GET)
@@ -104,6 +129,7 @@ public class RequirementChangeRecordController {
                                               @RequestParam("is_performanceTest")String is_performanceTest, @RequestParam("update_date")String update_date,
                                               @RequestParam("technicalPlan_desc")String technicalPlan_desc, @RequestParam("task_type")String task_type,
                                               @RequestParam("UAT_versionNumber")String UAT_versionNumber, @RequestParam("official_versionNumber")String official_versionNumber,
+                                              @RequestParam("shedule_functionTestVersion_submit") String shedule_functionTestVersion_submit,
                                               @RequestParam("shedule_functionTestVersion_finish")String shedule_functionTestVersion_finish, @RequestParam("shedule_officialVersion_submit")String shedule_officialVersion_submit,
                                               @RequestParam("data_of_production")String data_of_production, @RequestParam("lastest_progress")String lastest_progress,
                                               @RequestParam("description")String description,
@@ -123,7 +149,8 @@ public class RequirementChangeRecordController {
                 demand_leader,  development_leader,  task_code,
                 project_code,  is_newAddResources,  is_dataTransfer,
                 is_performanceTest,  update_date,  technicalPlan_desc,
-                task_type,  UAT_versionNumber,  official_versionNumber,
+                task_type,  UAT_versionNumber,
+                official_versionNumber,shedule_functionTestVersion_submit,
                 shedule_functionTestVersion_finish,  shedule_officialVersion_submit,
                 data_of_production,  lastest_progress,  description,
                 team_responsible_for,  user_last_changed, record_update_time)){

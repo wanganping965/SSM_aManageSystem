@@ -17,10 +17,7 @@
 	<title>登录</title>
 	<meta name="renderer" content="webkit">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<%--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">--%>
-	<%--<meta name="apple-mobile-web-app-status-bar-style" content="black">--%>
-	<%--<meta name="apple-mobile-web-app-capable" content="yes">--%>
-	<%--<meta name="format-detection" content="telephone=no">--%>
+
 
 	<script type="text/javascript">
         $(function() {
@@ -74,7 +71,7 @@
 					dataType:'text',
 					success:function(data){
 				        if(data == "login_success"){
-				            var nextUrl = "/login/login_success";
+				            var nextUrl = "/requirementManage/gotoRecordList";
 				            window.location.href = nextUrl;
 						}else{
 				            var errormsg="";

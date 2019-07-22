@@ -8,18 +8,29 @@
     <!--因为数据库表中储存了所有的记录，新增的或者更改的历史版本都在数据库中，-->
     <!--所以每次查询的时候，查询当前需求所有历史变更版本中的最新一条进行展示即可-->
     <select id="findAllRequirement" resultType="com.sixmai.domain.RequirementChangeRecord">
-        SELECT t.*
+        SELECT SQL_CALC_FOUND_ROWS t.*
+        FROM (SELECT * FROM requirementChangeRecord
+              ORDER BY record_update_time DESC limit 10000000000) t
+        GROUP BY t.demand_id
+        limit #{start},#{rows}
+    </select>
+    <select id="findTheNumberOfAllRequirement" resultType="int">
+        SELECT SQL_CALC_FOUND_ROWS t.*
         FROM (SELECT * FROM requirementChangeRecord
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
     </select>
+    <select id="getTotalFoundRecordNumber" resultType="int">
+        SELECT found_rows();
+    </select>
 
     <select id="findAllRequirementByOwnedTeam" resultType="com.sixmai.domain.RequirementChangeRecord">
-        SELECT t.*
+        SELECT SQL_CALC_FOUND_ROWS t.*
         FROM (SELECT * FROM requirementChangeRecord
               WHERE team_responsible_for=#{role}
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
+        limit #{start},#{rows}
     </select>
 
     <select id="findAllRequirementByAndUsername" resultType="com.sixmai.domain.RequirementChangeRecord">
@@ -28,6 +39,7 @@
               WHERE team_responsible_for=#{role} AND user_last_changed=#{username}
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
+        limit #{start},#{rows}
     </select>
 
     <select id="findRequirementRecordsByDemand_id" resultType="com.sixmai.domain.RequirementChangeRecord">
@@ -74,6 +86,7 @@
         task_type,
         UAT_versionNumber,
         official_versionNumber,
+        shedule_functionTestVersion_submit,
         shedule_functionTestVersion_finish,
         shedule_officialVersion_submit,
         date_of_production,
@@ -116,6 +129,7 @@
         #{task_type},
         #{UAT_versionNumber},
         #{official_versionNumber},
+        #{shedule_functionTestVersion_submit},
         #{shedule_functionTestVersion_finish},
         #{shedule_officialVersion_submit},
         #{date_of_production},
@@ -202,6 +216,7 @@
             <if test="official_versionNumber != null and official_versionNumber != ''">
                 official_versionNumber = #{official_versionNumber},
             </if>
+            shedule_functionTestVersion_submit = #{shedule_functionTestVersion_submit},
             shedule_functionTestVersion_finish = #{shedule_functionTestVersion_finish},
             shedule_officialVersion_submit = #{shedule_officialVersion_submit},
             date_of_production = #{date_of_production},
