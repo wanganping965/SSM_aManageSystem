@@ -5,24 +5,24 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.sixmai.mapper.RequirementChangeRecordMapper">
+    <resultMap id="RequirementChangeRecord" type="com.sixmai.domain.RequirementChangeRecord"></resultMap>
+    <resultMap id="recordCounts" type="java.lang.Long">
+        <result column="recordCounts" jdbcType="BIGINT"/>
+    </resultMap>
     <!--因为数据库表中储存了所有的记录，新增的或者更改的历史版本都在数据库中，-->
     <!--所以每次查询的时候，查询当前需求所有历史变更版本中的最新一条进行展示即可-->
-    <select id="findAllRequirement" resultType="com.sixmai.domain.RequirementChangeRecord">
+    <select id="findAllRequirement" resultMap="RequirementChangeRecord,recordCounts">
         SELECT SQL_CALC_FOUND_ROWS t.*
         FROM (SELECT * FROM requirementChangeRecord
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
         limit #{start},#{rows}
+        ;
+
+        SELECT found_rows() AS recordCounts;
     </select>
-    <select id="findTheNumberOfAllRequirement" resultType="int">
-        SELECT SQL_CALC_FOUND_ROWS t.*
-        FROM (SELECT * FROM requirementChangeRecord
-              ORDER BY record_update_time DESC limit 10000000000) t
-        GROUP BY t.demand_id
-    </select>
-    <select id="getTotalFoundRecordNumber" resultType="int">
-        SELECT found_rows();
-    </select>
+
+
 
     <select id="findAllRequirementByOwnedTeam" resultType="com.sixmai.domain.RequirementChangeRecord">
         SELECT SQL_CALC_FOUND_ROWS t.*
@@ -34,7 +34,7 @@
     </select>
 
     <select id="findAllRequirementByAndUsername" resultType="com.sixmai.domain.RequirementChangeRecord">
-        SELECT t.*
+        SELECT SQL_CALC_FOUND_ROWS t.*
         FROM (SELECT * FROM requirementChangeRecord
               WHERE team_responsible_for=#{role} AND user_last_changed=#{username}
               ORDER BY record_update_time DESC limit 10000000000) t
@@ -47,9 +47,9 @@
         WHERE demand_id=#{demand_id} ORDER BY record_update_time DESC
     </select>
 
-    <select id="findRequirementRecordsById" resultType="com.sixmai.domain.RequirementChangeRecord" parameterType="int">
+    <select id="findRequirementRecordsById" resultType="RequirementChangeRecord" parameterType="int">
         SELECT * FROM requirementChangeRecord
-        WHERE id = #{id}
+          WHERE id = #{id}
     </select>
     
     <insert id="addRequirementRecord" parameterType="com.sixmai.domain.RequirementChangeRecord">

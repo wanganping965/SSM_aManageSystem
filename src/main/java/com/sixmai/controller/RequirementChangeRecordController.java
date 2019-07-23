@@ -45,15 +45,12 @@ public class RequirementChangeRecordController {
         String start = request.getParameter("page");
         String rows = request.getParameter("rows");
 
-        ArrayList<Map<String,Object>> rowsData = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
-        int total = requirementChangeRecordService.getTotalFoundRecordNumbers();
-        Map<String,Object> jsonMap = new HashMap<String, Object>();
-        jsonMap.put("total",total);
-        jsonMap.put("rows",rowsData);
+        Map<String,Object> json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
+        System.out.println("total is: "+json_RowsDataWithTotalNumbers.get("total"));
 
-        return jsonMap;
+        return json_RowsDataWithTotalNumbers;
     }
-    @RequestMapping(value = "/getOurTeamRecordList",method = RequestMethod.GET)
+    @RequestMapping(value = "/getOurTeamRecordList",method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getOurTeamRecordList(@ModelAttribute("role") int role,HttpServletRequest request)
     {
@@ -68,7 +65,7 @@ public class RequirementChangeRecordController {
 
         return jsonMap;
     }
-    @RequestMapping(value = "/getRecordListRelatedToThisUsername",method = RequestMethod.GET)
+    @RequestMapping(value = "/getRecordListRelatedToThisUsername",method = RequestMethod.POST)
     @ResponseBody
     public Map<String,Object> getRecordListRelatedToThisUsername(@ModelAttribute("username") String username,@ModelAttribute("role") int role,HttpServletRequest request)
     {
@@ -84,14 +81,17 @@ public class RequirementChangeRecordController {
         return jsonMap;
     }
 
-    @RequestMapping(value = "/thisRecordDetails",method = RequestMethod.GET)
+    @RequestMapping(value = "/thisRecordDetails")
     @ResponseBody
-    public String postThisRecordDetails(HttpServletRequest request)
+    public Map<String, Object> postThisRecordDetails(HttpServletRequest request)
     {
         String id = request.getParameter("id");
-        ArrayList<String> record = requirementChangeRecordService.getThisDetailRecordsById(id);
-        String jsonData = JSON.toJSONString(record);
-        return jsonData;
+        ArrayList<Map<String, Object>> rowsData = requirementChangeRecordService.getThisDetailRecordsById(id);
+
+        Map<String,Object> jsonMap = new HashMap<String, Object>();
+        jsonMap.put("total","1");
+        jsonMap.put("rows",rowsData);
+        return jsonMap;
     }
 
     @RequestMapping("/gotoThisRecordHistoryList")
@@ -177,7 +177,7 @@ public class RequirementChangeRecordController {
     }
 
     // 删除这个需求所有的在数据库中的记录
-    @RequestMapping(value = "/deleteAllHistoryRecord",method = RequestMethod.POST)
+    @RequestMapping(value = "/deleteAllHistoryRecord")
     @ResponseBody
     public String deleteAllHistoryRecord(HttpServletRequest request)
     {

@@ -1,6 +1,7 @@
 package com.sixmai.mapper;
 
 import com.sixmai.domain.RequirementChangeRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,15 +10,15 @@ import java.util.List;
  */
 public interface RequirementChangeRecordMapper {
     // 用于展示所用的需求变更数据
-    List<RequirementChangeRecord> findAllRequirement(int start,int rows);
+    List<Object> findAllRequirement(@Param("start") int start, @Param("rows") int rows);
 //    int findTheNumberOfAllRequirement();
     int getTotalFoundRecordNumber();
     //用于获取本团队的所有能处理的需求
-    List<RequirementChangeRecord> findAllRequirementByOwnedTeam(int role,int start,int rows);
+    List<RequirementChangeRecord> findAllRequirementByOwnedTeam(@Param("role") int role,@Param("start")int start,@Param("rows")int rows);
 //    int findTheNumberOfAllRequirementByOwnedTeam(int role);
 
     //用于获取本账号处理过的需求记录
-    List<RequirementChangeRecord> findAllRequirementByAndUsername(int role,String username,int start,int rows);
+    List<RequirementChangeRecord> findAllRequirementByAndUsername(@Param("role") int role,@Param("username") String username,@Param("start") int start,@Param("rows") int rows);
 //    int findTheNumberOfAllRequirementByAndUsername(int role,String username);
 
     //获取同一需求编号的历史变更版本列表

@@ -31,7 +31,7 @@ public interface RequirementChangeRecordService {
                                  String data_of_production, String lastest_progress, String description,
                                  String team_responsible_for, String user_last_changed,String record_update_time);
     // *********************** 查看 ***********************
-    ArrayList<Map<String, Object>> findAllRequirementsRecord(String page, String rows);
+    Map<String,Object> findAllRequirementsRecord(String page, String rows);
     ArrayList<Map<String, Object>> findAllRequirementByOwnedTeam(String role,String page,String rows);
     ArrayList<Map<String, Object>> findAllRequirementByAndUsername(String role,String username,String page,String rows);
     int getTotalFoundRecordNumbers();
@@ -40,7 +40,7 @@ public interface RequirementChangeRecordService {
     ArrayList<ArrayList<String>> findThisRequirementHistoryVersion(String demand_id);
 
     // 获取具体的对应于唯一标识id 的那条记录
-    ArrayList<String> getThisDetailRecordsById(String id);
+    ArrayList<Map<String, Object>> getThisDetailRecordsById(String id);
 
 
     // *********************** 删除 ***********************

@@ -23,7 +23,7 @@
 
 </head>
 <body>
-<h2>Basic Layout</h2>
+<h2>首页 -- 所有需求列表页面</h2>
 <div id="content"  style="">
     <table id="dataList" class="easyui-datagrid">
 
@@ -37,11 +37,44 @@
             border: true,
             nowrap:false,
             method: "post",
-            pageSize: 20,//每页显示的记录条数，默认为10 
-            pageList: [20, 40, 50, 100],//可以设置每页记录条数的列表 
+            pageSize: 3,//每页显示的记录条数，默认为10 
+            pageList: [3, 40, 50, 100],//可以设置每页记录条数的列表 
             url: "/requirementManage/getAllRecordList",
             idField: 'id',
-//                singleSelect: true,//是否单选
+            toolbar: [{
+                text:"新增",
+                iconCls: 'icon-add',
+                handler: function(){
+                    addRecord();
+                }
+            },'-',{
+                text:"修改",
+                iconCls: 'icon-edit',
+                handler: function(){
+                    updateOneRecord();
+                }
+            },'-',{
+                text:"删除",
+                iconCls: 'icon-remove',
+                handler: function(){
+                    deleteRecords();
+                }
+            },'-',{
+                text:"帮助",
+                iconCls: 'icon-help',
+                handler: function(){
+                    alert('help')
+                }
+            },'-',{
+                text:"查看详情",
+                iconCls: 'icon-add',
+                handler: function(){
+                    viewThisRecord();
+                }
+            }],
+            striped:true, // 条纹化，奇偶行不同背景
+            singleSelect: false, <%-- 多行选择--%>
+            checkOnSelect:true, <%-- 复选框--%>
             pagination: true,//分页控件 ***************想要分页此属性为true
             rownumbers: true,
             loadMsg : '数据正在加载,请耐心的等待...',
@@ -53,12 +86,12 @@
             },//设置列的style，可以改变字体颜色，背景颜色等
             frozenColumns:[[]], // 滚动条
             columns: [[
-                {field: 'id',title:'序号',width:50},
+                {field: 'id',title:'序号',width:50, checkbox:true},
                 {field: 'demand_id',title:'需求编号',width:80},
                 {field: 'demand_name',title:'需求名称',width:80},
 //                    {field: 'demand_details',title:'需求细项',width:50},
 
-                {field: 'priority',title:'优先级',width:80,formatter:function(value,row,index){
+                {field: 'priority',title:'优先级',width:60,formatter:function(value,row,index){
                     if(value == 1){
                         return "高";
                     }else if(value == 2){
@@ -81,7 +114,7 @@
                         return "需求取消";
                     }
                 }},
-                {field: 'batch',title:'批次',width:30,formatter:function(value,row,index){
+                {field: 'batch',title:'批次',width:40,formatter:function(value,row,index){
                     if(value == 1){
                         return "X91";
                     }else if(value == 2){
@@ -119,25 +152,25 @@
                     }
                 }},
 
-                {field: 'business_department',title:'所属业务部门',width:50},
-                {field: 'business_team',title:'所属业务团队',width:50},
-                {field: 'leadOrCooperate',title:'牵头/配合',width:25,formatter:function(value,row,index){
+                {field: 'business_department',title:'所属业务部门',width:90},
+                {field: 'business_team',title:'所属业务团队',width:90},
+                {field: 'leadOrCooperate',title:'牵头/配合',width:60,formatter:function(value,row,index){
                     if(value == 1){
                         return "牵头";
                     }else{
                         return "配合";
                     }
                 }},
-                {field: 'product_name',title:'产品英文简称',width:80},
+                {field: 'product_name',title:'产品英文简称',width:120},
 
-                {field: 'version_status',title:'版本情况',width:40,formatter:function(value,row,index){
+                {field: 'version_status',title:'版本情况',width:80,formatter:function(value,row,index){
                     if(value == 1){
                         return "有版本";
                     }else{
                         return "配合测试";
                     }
                 }},
-                {field: 'development_model',title:'开发模式',width:40,formatter:function(value,row,index){
+                {field: 'development_model',title:'开发模式',width:70,formatter:function(value,row,index){
                     if(value == 1){
                         return "自主开发";
                     }else if(value == 2) {
@@ -145,20 +178,20 @@
                     }else
                         return "合作开发";
                 }},
-                {field: 'demand_leader',title:'需求牵头人',width:30},
-                {field: 'development_leader',title:'开发牵头人',width:30},
+                {field: 'demand_leader',title:'需求牵头人',width:80},
+                {field: 'development_leader',title:'开发牵头人',width:80},
 
 
                 {field: 'task_code',title:'任务编号',width:80},
-                {field: 'project_code',title:'项目编码',width:80},
-                {field: 'is_newAddResources',title:'是否新增资源',width:80,formatter:function(value,row,index){
+                {field: 'project_code',title:'项目编码',width:130},
+                {field: 'is_newAddResources',title:'是否新增资源',width:90,formatter:function(value,row,index){
                     if(value == 1){
                         return "是";
                     }else{
                         return "否";
                     }
                 }},
-                {field: 'is_dataTransfer',title:'是否数据迁移',width:80,formatter:function(value,row,index){
+                {field: 'is_dataTransfer',title:'是否数据迁移',width:90,formatter:function(value,row,index){
                     if(value == 1){
                         return "是";
                     }else{
@@ -166,15 +199,15 @@
                     }
                 }},
 
-                {field: 'is_performanceTest',title:'是否性能测试',width:80,formatter:function(value,row,index){
+                {field: 'is_performanceTest',title:'是否性能测试',width:90,formatter:function(value,row,index){
                     if(value == 1){
                         return "是";
                     }else{
                         return "否";
                     }
                 }},
-                {field: 'update_date',title:'更新日期',width:50},
-                {field: 'task_type',title:'任务类型',width:50,formatter:function(value,row,index){
+                {field: 'update_date',title:'更新日期',width:80},
+                {field: 'task_type',title:'任务类型',width:80,formatter:function(value,row,index){
                     if(value == 1){
                         return "项目";
                     }else if(value == 2) {
@@ -188,16 +221,16 @@
                     }else
                         return "版本追平";
                 }},
-                {field: 'UAT_versionNumber',title:'UTA版本号',width:60},
+                {field: 'UAT_versionNumber',title:'UTA版本号',width:140},
 
-                {field: 'official_versionNumber',title:'正式版本号',width:60},
-                {field: 'shedule_functionTestVersion_submit',title:'计划功能测试版本提交日期',width:60},
-                {field: 'shedule_functionTestVersion_finish',title:'计划功能测试完成日期',width:60},
-                {field: 'shedule_officialVersion_submit',title:'计划提交正式版日期',width:60},
-                {field: 'date_of_production',title:'投产日期',width:60},
+                {field: 'official_versionNumber',title:'正式版本号',width:140},
+                {field: 'shedule_functionTestVersion_submit',title:'计划功能测试版本提交日期',width:180},
+                {field: 'shedule_functionTestVersion_finish',title:'计划功能测试完成日期',width:180},
+                {field: 'shedule_officialVersion_submit',title:'计划提交正式版日期',width:180},
+                {field: 'date_of_production',title:'投产日期',width:100},
 
-                {field: 'lastest_progress',title:'最新进展',width:50},
-                {field: 'description',title:'说明',width:80}
+                {field: 'lastest_progress',title:'最新进展',width:100},
+                {field: 'description',title:'说明',width:120}
             ]]
         });
     });
@@ -223,8 +256,66 @@
 
     function fitCoulms() {
         $('#dataList').datagrid({
-            fitColumns:true
+            fitColumns:false
         })
+    }
+
+    function deleteRecords()
+    {
+        var datagrid = $('#dataList');
+        //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
+        var row = datagrid.datagrid("getChecked");
+        if(row){
+            $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">删除选中的'+row.length+'条</span>数据？',function (r) {
+                if(r){
+                    for(var i = row.length-1;i >= 0; i --){
+                        $.get("/requirementManage/deleteAllHistoryRecord",{demand_id:row[i].demand_id},
+                            function (result){
+                                if(result == "ok"){
+                                    datagrid.datagrid("reload"); //刷新页面
+                                }
+                                else{
+                                    $.messager.alert('提示','此数据删除失败：<br />'+result.msg,"info");
+                                }
+                            }
+                        )
+                    }
+                }
+            });
+        }
+    }
+
+    function updateOneRecord() {
+        var datagrid = $('#dataList');
+        //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
+        var row = datagrid.datagrid("getChecked");
+        if(row.length == 1){
+            var nextUrl = "/requirementManage/gotoRecordChange?id="+row[0].id;
+            window.location.href = nextUrl;
+        }else if(row.length == 0){
+            $.messager.alert('提示','您还未选择记录！',"info");
+        }else{
+            $.messager.alert('提示','您选择超过一条记录！',"info");
+        }
+    }
+
+    function viewThisRecord() {
+        var datagrid = $('#dataList');
+        //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
+        var row = datagrid.datagrid("getChecked");
+        if(row.length == 1){
+            var nextUrl = "/requirementManage/gotoRecordDetails?id="+row[0].id;
+            window.location.href = nextUrl;
+        }else if(row.length == 0){
+            $.messager.alert('提示','您还未选择记录！',"info");
+        }else{
+            $.messager.alert('提示','您选择超过一条记录！',"info");
+        }
+    }
+    
+    function addRecord() {
+        var nextUrl = "/requirementManage/gotoRecordAdd";
+        window.location.href = nextUrl;
     }
 </script>
 </body>

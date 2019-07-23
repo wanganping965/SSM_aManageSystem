@@ -3,6 +3,8 @@ package com.sixmai.service.impl;
 import com.sixmai.domain.RequirementChangeRecord;
 import com.sixmai.mapper.RequirementChangeRecordMapper;
 import com.sixmai.service.RequirementChangeRecordService;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,62 +71,58 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
     }
 
     @Override
-    public ArrayList<Map<String, Object>> findAllRequirementsRecord(String page, String rows) {
+    public Map<String,Object> findAllRequirementsRecord(String page, String rows) {
         int nums = Integer.parseInt(rows);
         int start = (Integer.parseInt(page) - 1) * nums;
         ArrayList<Map<String, Object>> recordlist = new ArrayList<Map<String, Object>>();
-        List<RequirementChangeRecord> records = requirementChangeRecordMapper.findAllRequirement(start, nums);
+        List<Object> recordss = requirementChangeRecordMapper.findAllRequirement(start, nums);
+        Long total = new Long(0);
+        if(CollectionUtils.isNotEmpty(recordss)){
+            List<RequirementChangeRecord> records = (List<RequirementChangeRecord>)recordss.get(0);
+            total = ((List<Long>)recordss.get(1)).get(0);
 
-        for (int i = 0; i < records.size(); i++) {
-//            ArrayList<String> tmp = new ArrayList<String>();
-            Map<String, Object> tmp = new HashMap<String, Object>();
-            RequirementChangeRecord record = records.get(i);
-            tmp.put("id", "" + record.getId());
-            tmp.put("demand_id", "" + record.getDemand_id());
-            tmp.put("demand_name", "" + record.getDemand_name());
-//            tmp.put("", "" + record.getDemand_details());
-//            tmp.put("", "" + record.getDemand_class());
-//            tmp.put("", "" + record.getDemand_content());
-            tmp.put("priority", record.getPriority());
-            tmp.put("priority_desc", "" + record.getPriority_desc());
-//            tmp.put("", "" + record.getBusiness_value());
-            tmp.put("demand_status", record.getDemand_status());
-            tmp.put("batch", record.getBatch());
-            tmp.put("business_department", "" + record.getBusiness_department());
-            tmp.put("business_team", "" + record.getBusiness_team());
-            tmp.put("leadOrCooperate", record.getLeadOrCooperate());
-            tmp.put("product_name", "" + record.getProduct_name());
-            tmp.put("version_status", record.getVersion_status());
-//            tmp.put("", "" + record.getWorkload());
-//            tmp.put("", "" + record.getExternal_workload());
-//            tmp.put("", "" + record.getVender_workload());
-            tmp.put("development_model", record.getDevelopment_model());
-//            tmp.put("", "" + record.getMain_product_situation());
-            tmp.put("demand_leader", "" + record.getDemand_leader());
-            tmp.put("development_leader", "" + record.getDevelopment_leader());
-            tmp.put("task_code", "" + record.getTask_code());
-            tmp.put("project_code", "" + record.getProject_code());
-            tmp.put("is_newAddResources", record.getIs_newAddResources());
-            tmp.put("is_dataTransfer", record.getIs_dataTransfer());
-            tmp.put("is_performanceTest", record.getIs_performanceTest());
-            tmp.put("update_date", "" + record.getUpdate_date());
-//            tmp.put("", "" + record.getTechnicalPlan_desc());
-            tmp.put("task_type", record.getTask_type());
-            tmp.put("UAT_versionNumber", "" + record.getUAT_versionNumber());
-            tmp.put("official_versionNumber", "" + record.getOfficial_versionNumber());
-            tmp.put("shedule_functionTestVersion_submit", "" + record.getShedule_functionTestVersion_submit());
-            tmp.put("shedule_functionTestVersion_finish", "" + record.getShedule_functionTestVersion_finish());
-            tmp.put("shedule_officialVersion_submit", "" + record.getShedule_officialVersion_submit());
-            tmp.put("date_of_production", "" + record.getDate_of_production());
-            tmp.put("lastest_progress", "" + record.getLastest_progress());
-            tmp.put("description", "" + record.getDescription());
-//            tmp.put("", "" + record.getTeam_responsible_for());
-//            tmp.put("", "" + record.getUser_last_changed());
-//            tmp.put("", "" + record.getRecord_update_time());
 
-            recordlist.add(tmp);
+            for (int i = 0; i < records.size(); i++) {
+                Map<String, Object> tmp = new HashMap<String, Object>();
+                RequirementChangeRecord record = records.get(i);
+                tmp.put("id", "" + record.getId());
+                tmp.put("demand_id", "" + record.getDemand_id());
+                tmp.put("demand_name", "" + record.getDemand_name());
+                tmp.put("priority", record.getPriority());
+                tmp.put("priority_desc", "" + record.getPriority_desc());
+                tmp.put("demand_status", record.getDemand_status());
+                tmp.put("batch", record.getBatch());
+                tmp.put("business_department", "" + record.getBusiness_department());
+                tmp.put("business_team", "" + record.getBusiness_team());
+                tmp.put("leadOrCooperate", record.getLeadOrCooperate());
+                tmp.put("product_name", "" + record.getProduct_name());
+                tmp.put("version_status", record.getVersion_status());
+                tmp.put("development_model", record.getDevelopment_model());
+                tmp.put("demand_leader", "" + record.getDemand_leader());
+                tmp.put("development_leader", "" + record.getDevelopment_leader());
+                tmp.put("task_code", "" + record.getTask_code());
+                tmp.put("project_code", "" + record.getProject_code());
+                tmp.put("is_newAddResources", record.getIs_newAddResources());
+                tmp.put("is_dataTransfer", record.getIs_dataTransfer());
+                tmp.put("is_performanceTest", record.getIs_performanceTest());
+                tmp.put("update_date", "" + record.getUpdate_date());
+                tmp.put("task_type", record.getTask_type());
+                tmp.put("UAT_versionNumber", "" + record.getUAT_versionNumber());
+                tmp.put("official_versionNumber", "" + record.getOfficial_versionNumber());
+                tmp.put("shedule_functionTestVersion_submit", "" + record.getShedule_functionTestVersion_submit());
+                tmp.put("shedule_functionTestVersion_finish", "" + record.getShedule_functionTestVersion_finish());
+                tmp.put("shedule_officialVersion_submit", "" + record.getShedule_officialVersion_submit());
+                tmp.put("date_of_production", "" + record.getDate_of_production());
+                tmp.put("lastest_progress", "" + record.getLastest_progress());
+                tmp.put("description", "" + record.getDescription());
+                recordlist.add(tmp);
+            }
         }
-        return recordlist;
+
+        Map<String,Object> res = new HashMap<String,Object>();
+        res.put("rows",recordlist);
+        res.put("total",total);
+        return res;
     }
 
     @Override
@@ -302,55 +300,55 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
     }
 
     @Override
-    public ArrayList<String> getThisDetailRecordsById(String id) {
+    public ArrayList<Map<String, Object>> getThisDetailRecordsById(String id) {
 
         RequirementChangeRecord record = requirementChangeRecordMapper.findRequirementRecordsById(Integer.parseInt(id));
 
-        ArrayList<String> tmp = new ArrayList<String>();
-        tmp.add("" + record.getDemand_id());
-        tmp.add("" + record.getDemand_name());
-        tmp.add("" + record.getDemand_details());
-        tmp.add("" + record.getDemand_class());
-        tmp.add("" + record.getDemand_content());
-        tmp.add("" + record.getPriority());
-        tmp.add("" + record.getPriority_desc());
-        tmp.add("" + record.getBusiness_value());
-        tmp.add("" + record.getDemand_status());
-        tmp.add("" + record.getBatch());
-        tmp.add("" + record.getBusiness_department());
-        tmp.add("" + record.getBusiness_team());
-        tmp.add("" + record.getLeadOrCooperate());
-        tmp.add("" + record.getProduct_name());
-        tmp.add("" + record.getVersion_status());
-        tmp.add("" + record.getWorkload());
-        tmp.add("" + record.getExternal_workload());
-        tmp.add("" + record.getVender_workload());
-        tmp.add("" + record.getDevelopment_model());
-        tmp.add("" + record.getMain_product_situation());
-        tmp.add("" + record.getDemand_leader());
-        tmp.add("" + record.getDevelopment_leader());
-        tmp.add("" + record.getTask_code());
-        tmp.add("" + record.getProject_code());
-        tmp.add("" + record.getIs_newAddResources());
-        tmp.add("" + record.getIs_dataTransfer());
-        tmp.add("" + record.getIs_performanceTest());
-        tmp.add("" + record.getUpdate_date());
-        tmp.add("" + record.getTechnicalPlan_desc());
-        tmp.add("" + record.getTask_type());
-        tmp.add("" + record.getUAT_versionNumber());
-        tmp.add("" + record.getOfficial_versionNumber());
-        tmp.add("" + record.getShedule_functionTestVersion_submit());
+        Map<String, Object> tmp = new HashMap<String, Object>();
 
-        tmp.add("" + record.getShedule_functionTestVersion_finish());
-        tmp.add("" + record.getShedule_officialVersion_submit());
-        tmp.add("" + record.getDate_of_production());
-        tmp.add("" + record.getLastest_progress());
-        tmp.add("" + record.getDescription());
-        tmp.add("" + record.getTeam_responsible_for());
-        tmp.add("" + record.getUser_last_changed());
-        tmp.add("" + record.getRecord_update_time());
+        tmp.put("id", "" + record.getId());
+        tmp.put("demand_id", "" + record.getDemand_id());
+        tmp.put("demand_name", "" + record.getDemand_name());
+        tmp.put("demand_details", "" + record.getDemand_details());
+        tmp.put("demand_class", "" + record.getDemand_class());
+        tmp.put("demand_content", "" + record.getDemand_content());
+        tmp.put("priority", record.getPriority());
+        tmp.put("priority_desc", "" + record.getPriority_desc());
+        tmp.put("business_value", "" + record.getBusiness_value());
+        tmp.put("demand_status", record.getDemand_status());
+        tmp.put("batch", record.getBatch());
+        tmp.put("business_department", "" + record.getBusiness_department());
+        tmp.put("business_team", "" + record.getBusiness_team());
+        tmp.put("leadOrCooperate", record.getLeadOrCooperate());
+        tmp.put("product_name", "" + record.getProduct_name());
+        tmp.put("version_status", record.getVersion_status());
+        tmp.put("workload", "" + record.getWorkload());
+        tmp.put("external_workload", "" + record.getExternal_workload());
+        tmp.put("vender_workload", "" + record.getVender_workload());
+        tmp.put("development_model", record.getDevelopment_model());
+        tmp.put("main_product_situation", "" + record.getMain_product_situation());
+        tmp.put("demand_leader", "" + record.getDemand_leader());
+        tmp.put("development_leader", "" + record.getDevelopment_leader());
+        tmp.put("task_code", "" + record.getTask_code());
+        tmp.put("project_code", "" + record.getProject_code());
+        tmp.put("is_newAddResources", record.getIs_newAddResources());
+        tmp.put("is_dataTransfer", record.getIs_dataTransfer());
+        tmp.put("is_performanceTest", record.getIs_performanceTest());
+        tmp.put("update_date", "" + record.getUpdate_date());
+        tmp.put("technicalPlan_desc", "" + record.getTechnicalPlan_desc());
+        tmp.put("task_type", record.getTask_type());
+        tmp.put("UAT_versionNumber", "" + record.getUAT_versionNumber());
+        tmp.put("official_versionNumber", "" + record.getOfficial_versionNumber());
+        tmp.put("shedule_functionTestVersion_submit", "" + record.getShedule_functionTestVersion_submit());
+        tmp.put("shedule_functionTestVersion_finish", "" + record.getShedule_functionTestVersion_finish());
+        tmp.put("shedule_officialVersion_submit", "" + record.getShedule_officialVersion_submit());
+        tmp.put("date_of_production", "" + record.getDate_of_production());
+        tmp.put("lastest_progress", "" + record.getLastest_progress());
+        tmp.put("description", "" + record.getDescription());
 
-        return tmp;
+        ArrayList<Map<String, Object>> recordlist = new ArrayList<Map<String, Object>>();
+        recordlist.add(tmp);
+        return recordlist;
     }
 
     @Override
