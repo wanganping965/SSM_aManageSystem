@@ -818,7 +818,8 @@
   border: 0;
   margin: 0;
   padding: 0 4px;
-  white-space: normal;
+  /*todo*/
+  white-space: pre-wrap;
   vertical-align: top;
   outline-style: none;
   resize: none;
