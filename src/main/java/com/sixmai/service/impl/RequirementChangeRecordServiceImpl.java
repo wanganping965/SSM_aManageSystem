@@ -23,6 +23,11 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         this.requirementChangeRecordMapper = requirementChangeRecordMapper;
     }
 
+    private String dateFormatterTransfer(String before){
+        String[] m_d_y = before.split("/");
+        return m_d_y[2]+"-"+m_d_y[0]+"-"+m_d_y[1];
+    }
+
     @Override
     public boolean setRequirementRecord(String demand_id, String demand_name, String demand_details,
                                         String demand_class, String demand_content, String priority,
@@ -52,14 +57,14 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
                 demand_leader, development_leader, task_code,
                 project_code, Integer.parseInt(is_newAddResources), Integer.parseInt(is_dataTransfer),
                 Integer.parseInt(is_performanceTest),
-                java.sql.Date.valueOf(update_date),
+                java.sql.Date.valueOf(dateFormatterTransfer(update_date)),
                 technicalPlan_desc,
                 Integer.parseInt(task_type), UAT_versionNumber,
                 official_versionNumber,
-                java.sql.Date.valueOf(shedule_functionTestVersion_submit),
-                java.sql.Date.valueOf(shedule_functionTestVersion_finish),
-                java.sql.Date.valueOf(shedule_officialVersion_submit),
-                java.sql.Date.valueOf(date_of_production), lastest_progress, description,
+                java.sql.Date.valueOf(dateFormatterTransfer(shedule_functionTestVersion_submit)),
+                java.sql.Date.valueOf(dateFormatterTransfer(shedule_functionTestVersion_finish)),
+                java.sql.Date.valueOf(dateFormatterTransfer(shedule_officialVersion_submit)),
+                java.sql.Date.valueOf(dateFormatterTransfer(date_of_production)), lastest_progress, description,
                 Integer.parseInt(team_responsible_for), user_last_changed,
                 java.sql.Timestamp.valueOf(record_update_time));
 //        }

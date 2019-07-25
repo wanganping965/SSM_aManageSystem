@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by 未来人来xw on 2019/7/18.
@@ -109,6 +106,7 @@ public class RequirementChangeRecordController {
      *                   新增即删除记录的controller操作
      *     *********************************************************************
      */
+
     @RequestMapping(value = "/updateThisRequirementRecord",method = RequestMethod.POST)
     @ResponseBody
     public String updateThisRequirementRecord(@RequestParam("demand_id")String demand_id,
@@ -135,10 +133,14 @@ public class RequirementChangeRecordController {
                                               @RequestParam("description")String description,
                                               @ModelAttribute("role")String team_responsible_for, @ModelAttribute("username")String user_last_changed)
     {
+        String username = team_responsible_for;
+        String it = user_last_changed;
+
         //获取当前的时间 年月日时分秒
         Date nowTime = new Date(System.currentTimeMillis());
         SimpleDateFormat sdFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String record_update_time = sdFormatter.format(nowTime);
+
         if(requirementChangeRecordService.setRequirementRecord(demand_id,  demand_name,  demand_details,
                 demand_class,  demand_content,  priority,
                 priority_desc,  business_value,  demand_status,

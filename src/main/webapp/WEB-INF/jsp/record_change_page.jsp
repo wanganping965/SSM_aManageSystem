@@ -26,7 +26,7 @@
 <h2>首页 -- 所有需求列表页面</h2>
 <div id="content"  style="">
     <a id="btn_keep" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存修改</a>
-    <a id="btn_cancel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-refresh'">取消</a>
+    <a id="btn_cancel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-back'">取消</a>
     <table id="dataList" class="easyui-datagrid">
 
     </table>
@@ -43,13 +43,39 @@
     <input type="hidden" class="temp-value-kept" id="textbox-isDataTransfer-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-isPerformanceTest-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-taskType-value" value="1">
+       <%--// used to keep the date data gotten from the database;--%>
+    <%--<input type="hidden" class="temp-value-kept" id="textbox-sheduleFunctionTestVersionSubmit-value" value="1">--%>
+    <%--<input type="hidden" class="temp-value-kept" id="textbox-sheduleFunctionTestVersionFinish-value" value="1">--%>
+    <%--<input type="hidden" class="temp-value-kept" id="textbox-sheduleOfficialVersionSubmit-value" value="1">--%>
+    <%--<input type="hidden" class="temp-value-kept" id="textbox-dateOfProduction-value" value="1">--%>
+    <%--<input type="hidden" class="temp-value-kept" id="textbox-updateDate-value" value="1">--%>
 
 </div>
 
 <script type="text/javascript">
     $(function(){
 
+//        重写日期输出的格式化formatter函数
+        $.fn.datebox.defaults.formatter = function(date){
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
+            return m+'/'+d+'/'+y;
+        }
     })
+
+    function transformerDateToStyle(dateString)
+    {
+        var dateList = dateString.split("-");
+        if(dateList.length != 3){
+            console.log("后台传输过来的时间格式错误！");
+            $.messager.alert('提示','后台传输过来的时间格式错误！：<br />'," info");
+        }
+        else{
+            return dateList[1]+'/' + dateList[2]+'/'+dateList[0];
+        }
+    }
+
     $(document).ready(function() {
         var id = '${id}';
 //        console.log("id is: "+id);
@@ -87,14 +113,7 @@
                 {field: 'demand_content',title:'需求内容',width:200,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='demandContent2' data-options=\"multiline:true\" style=\"width:200px;height: 60px\" value=\""+ value +"\">";
                 }},
-                {field: 'priority',title:'优先级',width:60,formatter:function(value,row,index){
-//                    if(value == 1){
-//                        return "高";
-//                    }else if(value == 2){
-//                        return "中";
-//                    }else{
-//                        return "低";
-//                    }
+                {field: 'priority',title:'优先级',width:63,formatter:function(value,row,index){
                     // 将这个值存储在hidden input里面，后续再存进下拉框中
 //                    var it = document.getElementsByName("")
                     $('#textbox-priority-value').val(value);
@@ -108,14 +127,14 @@
                 {field: 'business_value',title:'业务价值',width:150,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='businessValue2' style=\"width:150px;height: 60px\" value=\""+ value +"\">";
                 }},
-                {field: 'demand_status',title:'需求状态',width:60,formatter:function(value,row,index){
+                {field: 'demand_status',title:'需求状态',width:93,formatter:function(value,row,index){
 
                     $('#textbox-demandStatus-value').val(value);
-                    return '<select id="demandStatus1" class="easyui-combobox" name="demandStatus1" style="width:60px;"><option value="1">意向需求</option><option value="2">方案制定中</option><option value="3">已回函，待排期</option><option value="4">任务已下达</option><option value="5">需求取消</option></select>';
+                    return '<select id="demandStatus1" class="easyui-combobox" name="demandStatus1" style="width:90px;"><option value="1">意向需求</option><option value="2">方案制定中</option><option value="3">已回函，待排期</option><option value="4">任务已下达</option><option value="5">需求取消</option></select>';
                 }},
-                {field: 'batch',title:'批次',width:40,formatter:function(value,row,index){
+                {field: 'batch',title:'批次',width:83,formatter:function(value,row,index){
                     $('#textbox-batch-value').val(value);
-                    return '<select id="batch1" class="easyui-combobox" name="batch1" style="width:40px;"><option value="1">X91</option><option value="2">X92</option><option value="3">P901</option><option value="4">X93</option><option value="5">X94</option><option value="6">P902</option><option value="7">X95</option><option value="8">X96</option><option value="9">X97</option><option value="10">P903</option><option value="11">X98</option><option value="12">X99</option><option value="13">X910</option><option value="14">P904</option><option value="15">X911</option><option value="16">X912</option><option value="17">待排期</option></select>'
+                    return '<select id="batch1" class="easyui-combobox" name="batch1" style="width:80px;"><option value="1">X91</option><option value="2">X92</option><option value="3">P901</option><option value="4">X93</option><option value="5">X94</option><option value="6">P902</option><option value="7">X95</option><option value="8">X96</option><option value="9">X97</option><option value="10">P903</option><option value="11">X98</option><option value="12">X99</option><option value="13">X910</option><option value="14">P904</option><option value="15">X911</option><option value="16">X912</option><option value="17">待排期</option></select>'
                 }},
                 {field: 'business_department',title:'所属业务部门',width:90,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='businessDepartment2' style=\"width:90px;height: 60px\" value=\""+ value +"\">";
@@ -124,14 +143,14 @@
                 {field: 'business_team',title:'所属业务团队',width:90,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='businessTeam2' style=\"width:90px;height: 60px\" value=\""+ value +"\">";
                 }},
-                {field: 'leadOrCooperate',title:'牵头/配合',width:80,formatter:function(value,row,index){
+                {field: 'leadOrCooperate',title:'牵头/配合',width:83,formatter:function(value,row,index){
                     $('#textbox-leadOrCooperate-value').val(value);
                     return '<select id="leadOrCooperate1" class="easyui-combobox" name="leadOrCooperate1" style="width:80px;"><option value="1">牵头</option><option value="2">配合</option></select>'
                 }},
                 {field: 'product_name',title:'产品英文简称',width:120,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='productName2' style=\"width:120px;height: 60px\" value=\""+ value +"\">";
                 }},
-                {field: 'version_status',title:'版本情况',width:80,formatter:function(value,row,index){
+                {field: 'version_status',title:'版本情况',width:83,formatter:function(value,row,index){
                     $('#textbox-versionStatus-value').val(value);
                     return '<select id="versionStatus1" class="easyui-combobox" name="versionStatus1" style="width:80px;"><option value="1">有版本</option><option value="2">配合测试</option></select>'
                 }},
@@ -145,9 +164,9 @@
                 {field: 'vender_workload',title:'厂商工作量',width:100,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='venderWorkload2' style=\"width:100px;height: 60px\" value=\""+ value +"\">";
                 }},
-                {field: 'development_model',title:'开发模式',width:70,formatter:function(value,row,index){
+                {field: 'development_model',title:'开发模式',width:78,formatter:function(value,row,index){
                     $('#textbox-developmentMode-value').val(value);
-                    return '<select id="developmentModel1" class="easyui-combobox" name="developmentModel1" style="width:70px;"><option value="1">自主开发</option><option value="2">厂商开发</option><option value="3">合作开发</option></select>'
+                    return '<select id="developmentModel1" class="easyui-combobox" name="developmentModel1" style="width:75px;"><option value="1">自主开发</option><option value="2">厂商开发</option><option value="3">合作开发</option></select>'
                 }},
 
                 {field: 'main_product_situation',title:'主要涉及产品情况',width:180,formatter:function (value,row,index) {
@@ -166,22 +185,24 @@
                 {field: 'project_code',title:'项目编码',width:130,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='projectCode2' style=\"width:130px;height: 60px\" value=\""+ value +"\">";
                 }},
-                {field: 'is_newAddResources',title:'是否新增资源',width:90,formatter:function(value,row,index){
+                {field: 'is_newAddResources',title:'是否新增资源',width:93,formatter:function(value,row,index){
                     $('#textbox-isNewAddResources-value').val(value);
                     return '<select id="isNewAddResources1" class="easyui-combobox" name="isNewAddResources1" style="width:90px;"><option value="1">是</option><option value="0">否</option></select>'
                 }},
-                {field: 'is_dataTransfer',title:'是否数据迁移',width:90,formatter:function(value,row,index){
+                {field: 'is_dataTransfer',title:'是否数据迁移',width:93,formatter:function(value,row,index){
                     $('#textbox-isDataTransfer-value').val(value);
                     return '<select id="isDataTransfer1" class="easyui-combobox" name="isDataTransfer1" style="width:90px;"><option value="1">是</option><option value="0">否</option></select>'
                 }},
-                {field: 'is_performanceTest',title:'是否性能测试',width:90,formatter:function(value,row,index){
+                {field: 'is_performanceTest',title:'是否性能测试',width:93,formatter:function(value,row,index){
                     $('#textbox-isperformancetest-value').val(value);
 
                     return '<select id="isPerformanceTest1" class="easyui-combobox" name="isPerformanceTest1" style="width:90px;"><option value="1">是</option><option value="0">否</option></select>'
                 }},
 
-
-                {field: 'update_date',title:'更新日期',width:80},
+                {field: 'update_date',title:'更新日期',width:178,formatter:function (value,row,index) {
+//                    $('#textbox-updateDate-value').val(transformerDateToStyle(value));
+                    return '<input id="updateDate3" type="text" value="'+transformerDateToStyle(value)+'">';
+                }},
                 {field: 'technicalPlan_desc',title:'技术方案说明',width:180,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='technicalPlanDesc2' style=\"width:180px;height: auto\" value=\""+ value +"\">";
                 }},
@@ -196,15 +217,28 @@
                 {field: 'official_versionNumber',title:'正式版本号',width:140,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='officialVersionNumber2' style=\"width:140px;height: auto\" value=\""+ value +"\">";
                 }},
-                {field: 'shedule_functionTestVersion_submit',title:'计划功能测试版本提交日期',width:180},
-                {field: 'shedule_functionTestVersion_finish',title:'计划功能测试完成日期',width:180},
-                {field: 'shedule_officialVersion_submit',title:'计划提交正式版日期',width:180},
+//                TODO
+                {field: 'shedule_functionTestVersion_submit',title:'计划功能测试版本提交日期',width:180,formatter:function (value,row,index) {
+//                    $('#textbox-sheduleFunctionTestVersionSubmit-value').val(transformerDateToStyle(value));
+                    return '<input id="sheduleFunctionTestVersionSubmit3" type="text" value="'+transformerDateToStyle(value)+'">';
+                }},
+                {field: 'shedule_functionTestVersion_finish',title:'计划功能测试完成日期',width:180,formatter:function (value,row,index) {
+//                    $('#textbox-sheduleFunctionTestVersionFinish-value').val(transformerDateToStyle(value));
+                    return '<input id="sheduleFunctionTestVersionFinish3" type="text" value="'+transformerDateToStyle(value)+'">';
+                }},
+                {field: 'shedule_officialVersion_submit',title:'计划提交正式版日期',width:180,formatter:function (value,row,index) {
+//                    $('#textbox-sheduleOfficialVersionSubmit-value').val(transformerDateToStyle(value));
+                    return '<input id="sheduleOfficialVersionSubmit3" type="text" value="'+transformerDateToStyle(value)+'">';
+                }},
 
-                {field: 'date_of_production',title:'投产日期',width:100},
+                {field: 'date_of_production',title:'投产日期',width:180,formatter:function (value,row,index) {
+//                    $('#textbox-dateOfProduction-value').val(transformerDateToStyle(value));
+                    return '<input id="dateOfProduction3" type="text" value="'+transformerDateToStyle(value)+'">';
+                }},
                 {field: 'lastest_progress',title:'最新进展',width:200,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='lastestProgress2' style=\"width:200px;height: auto\" value=\""+ value +"\">";
                 }},
-                {field: 'description',title:'说明',width:120,formatter:function (value,row,index) {
+                {field: 'description',title:'说明',width:125,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='description2' style=\"width:120px;height: auto\" value=\""+ value +"\">";
                 }}
             ]]
@@ -256,6 +290,22 @@
             val = $('#textbox-taskType-value').val();
             $("#taskType1").val(parseInt(val));
 
+            $('#sheduleFunctionTestVersionSubmit3').datebox({
+                required:true
+            });
+            $('#sheduleFunctionTestVersionFinish3').datebox({
+                required:true
+            });
+            $('#sheduleOfficialVersionSubmit3').datebox({
+                required:true
+            });
+            $('#dateOfProduction3').datebox({
+                required:true
+            });
+            $('#updateDate3').datebox({
+                required:true
+            });
+
             $('#btn_keep').bind('click',function(){
 //            todo: 数据修改
                 $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">修改该条数据？',function (r) {
@@ -264,54 +314,60 @@
                         var rowIndex = $('#dataList').datagrid('getRowIndex', parseInt(id));//id是关键字值
                         var data = $('#dataList').datagrid('getData').rows[rowIndex];
 
-                        console.log("the html str is : "+ $("#demandName2").val());
-//                        console.log("the html str is : "+ $("#demandName2").value);
+                        console.log("demand_id is : "+data.demand_id);
+                        console.log("demand_name is : "+ $("#demandName2").val());
+                        console.log("demand_details is: "+$("#demandDetails2").val());
+                        console.log("demand_status is: "+$("#demandStatus1").val().toString());
+                        console.log("updateDate get by val is: "+$("#updateDate3").val());
+                        console.log("updateDate get by getValue is: "+$("#updateDate3").datebox("getValue"));
+
                         $.ajax({
                             url:'/requirementManage/updateThisRequirementRecord',
                             type:'post',
                             data:{
-                                'demand_id':data.demand_id,
-                                'demand_name':$("#demandName2").textbox('getValue'),
-                                'demand_details':$("#demandDetails2").textbox('getValue'),
-                                'demand_class':$("#demandClass2").textbox('getValue'),
-                                'demand_content':$("#demandContent2").textbox('getValue'),
+                                'demand_id':data.demand_id.toString(),
+                                'demand_name':$("#demandName2").val(),
+                                'demand_details':$("#demandDetails2").val(),
+                                'demand_class':$("#demandClass2").val(),
+                                'demand_content':$("#demandContent2").val(),
                                 'priority':$("#priority1").val().toString(),
-                                'priority_desc':data.priority_desc,
-                                'business_value':$("#businessValue2").textbox('getValue'),
+                                'priority_desc':data.priority_desc.toString(),
+                                'business_value':$("#businessValue2").val(),
                                 'demand_status':$("#demandStatus1").val().toString(),
                                 'batch':$("#batch1").val().toString(),
-                                'business_department':$("#businessDepartment2").textbox('getValue'),
-                                'business_team':$("#businessTeam2").textbox('getValue'),
+                                'business_department':$("#businessDepartment2").val(),
+                                'business_team':$("#businessTeam2").val(),
                                 'leadOrCooperate':$("#leadOrCooperate1").val().toString(),
-                                'product_name':$("#productName2").textbox('getValue'),
+                                'product_name':$("#productName2").val(),
                                 'version_status':$("#versionStatus1").val().toString(),
-                                'workload':$("#workload2").textbox('getValue'),
-                                'external_workload':$("#externalWorkload2").textbox('getValue'),
-                                'vender_workload':$("#venderWorkload2").textbox('getValue'),
+                                'workload':$("#workload2").val(),
+                                'external_workload':$("#externalWorkload2").val(),
+                                'vender_workload':$("#venderWorkload2").val(),
                                 'development_model':$("#developmentModel1").val().toString(),
-                                'main_product_situation':$("#mainProductSituation2").textbox('getValue'),
-                                'demand_leader':$("#demandLeader2").textbox('getValue'),
-                                'development_leader':$("#developmentLeader2").textbox('getValue'),
-                                'task_code':$("#taskCode2").textbox('getValue'),
-                                'project_code':$("#projectCode2").textbox('getValue'),
+                                'main_product_situation':$("#mainProductSituation2").val(),
+                                'demand_leader':$("#demandLeader2").val(),
+                                'development_leader':$("#developmentLeader2").val(),
+                                'task_code':$("#taskCode2").val(),
+                                'project_code':$("#projectCode2").val(),
                                 'is_newAddResources':$("#isNewAddResources1").val().toString(),
                                 'is_dataTransfer':$("#isDataTransfer1").val().toString(),
                                 'is_performanceTest':$("#isPerformanceTest1").val().toString(),
-                                'update_date':data.update_date,
-                                'technicalPlan_desc':$("#technicalPlanDesc2").textbox('getValue'),
-                                'task_type':$(data.task_type).val().toString(),
-                                'UAT_versionNumber':$("#UAT_versionNumber2").textbox('getValue'),
-                                'official_versionNumber':$("#officialVersionNumber2").textbox('getValue'),
-                                'shedule_functionTestVersion_submit':data.shedule_functionTestVersion_submit,
-                                'shedule_functionTestVersion_finish':data.shedule_functionTestVersion_finish,
-                                'shedule_officialVersion_submit':data.shedule_officialVersion_submit,
-                                'data_of_production':data.data_of_production,
-                                'lastest_progress':$("#lastestProgress2").textbox('getValue'),
-                                'description':$("#description2").textbox('getValue')
+                                'update_date':$("#updateDate3").datebox("getValue").toString(),
+                                'technicalPlan_desc':$("#technicalPlanDesc2").val(),
+                                'task_type':$("#taskType1").val().toString(),
+                                'UAT_versionNumber':$("#UAT_versionNumber2").val(),
+                                'official_versionNumber':$("#officialVersionNumber2").val(),
+                                'shedule_functionTestVersion_submit':$("#sheduleFunctionTestVersionSubmit3").datebox("getValue").toString(),
+                                'shedule_functionTestVersion_finish':$("#sheduleFunctionTestVersionFinish3").datebox("getValue").toString(),
+                                'shedule_officialVersion_submit':$("#sheduleOfficialVersionSubmit3").datebox("getValue").toString(),
+                                'data_of_production':$("#dateOfProduction3").datebox("getValue").toString(),
+                                'lastest_progress':$("#lastestProgress2").val(),
+                                'description':$("#description2").val()
                             },
                             dataType:'text',
                             success:function (data) {
                                 if(data == 'ok'){
+                                    $.messager.alert("操作提示", "操作成功！返回列表页...","info");
                                     var nextUrl = "/requirementManage/gotoRecordList";
                                     window.location.href = nextUrl;
                                 }
@@ -321,6 +377,9 @@
                                 }
                             }
                         })
+
+
+
 //                    var checkValue=$("#priority1").val();  //获取Select选择的Value
                     }
                 });

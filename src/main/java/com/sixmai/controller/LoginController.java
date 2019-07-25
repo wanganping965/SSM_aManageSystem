@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,13 +33,17 @@ public class LoginController {
 
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     @ResponseBody
-    public String login( @RequestParam("username") String username,@RequestParam("password") String password,
-                        @RequestParam("role") int role) {
+    public String login(@RequestParam("username") String username, @RequestParam("password") String password,
+                        @RequestParam("role") int role, ModelMap modelMap) {
 
         String loginname = new String(username);
         Map<String, Object> map = loginService.login(loginname, password, role);
 
         if (map.get("status").equals("200")) {
+            //登录成功之后将 username和role添加到SessionAttributes中
+            modelMap.addAttribute("username",loginname);
+            modelMap.addAttribute("role",""+role);
+
             return "login_success";
         }
         else {
