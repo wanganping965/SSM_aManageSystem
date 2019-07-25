@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 
 import com.sixmai.domain.RequirementChangeRecord;
 import com.sixmai.service.RequirementChangeRecordService;
+import com.sun.xml.internal.bind.v2.TODO;
+import org.apache.commons.collections.map.HashedMap;
 import org.aspectj.apache.bcel.util.ClassLoaderRepository;
+import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -47,6 +50,23 @@ public class RequirementChangeRecordController {
 
         return json_RowsDataWithTotalNumbers;
     }
+
+    @RequestMapping(value = "/getThisHistoryRecordList")
+    @ResponseBody
+    public Map<String,Object> getThisHistoryRecordList(HttpServletRequest request)
+    {
+        // 页码和每页记录的条数
+        String start = request.getParameter("page");
+        String rows = request.getParameter("rows");
+        String demand_id = request.getParameter("demand_id");
+//        Map<String,Object> json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
+
+        Map<String,Object> json_RowsDataWithTotalNumbers = requirementChangeRecordService.findThisRequirementHistoryVersion(demand_id,start,rows);
+        System.out.println("the rows of the demand history version is: "+json_RowsDataWithTotalNumbers.get("rows"));
+
+        return json_RowsDataWithTotalNumbers;
+    }
+
     @RequestMapping(value = "/getOurTeamRecordList",method = RequestMethod.POST)
     @ResponseBody
     public Map<String, Object> getOurTeamRecordList(@ModelAttribute("role") int role,HttpServletRequest request)
@@ -91,15 +111,19 @@ public class RequirementChangeRecordController {
         return jsonMap;
     }
 
-    @RequestMapping("/gotoThisRecordHistoryList")
+    @RequestMapping("/getNullRecordDetails")
     @ResponseBody
-    public String gotoThisRecordHistoryList(HttpServletRequest request, ModelMap modelMap)
+    public Map<String,Object> postNullRecordDetails()
     {
-        String demand_id = request.getParameter("demand_id");
-        ArrayList<ArrayList<String>> recordList = requirementChangeRecordService.findThisRequirementHistoryVersion(demand_id);
-        String jsonData = JSON.toJSONString(recordList);
-        return jsonData;
+        ArrayList<Map<String,Object>> rowsData = requirementChangeRecordService.getNullDetailRecord();
+
+        Map<String,Object> jsonMap = new HashMap<String,Object>();
+        jsonMap.put("total","1");
+        jsonMap.put("rows",rowsData);
+
+        return jsonMap;
     }
+
 
     /***  *********************************************************************
      *
@@ -167,7 +191,7 @@ public class RequirementChangeRecordController {
     // 只删除这个需求所有的在数据库中的最近一条记录，即当前查看的记录
     @RequestMapping(value = "/deleteThisRequirementRecord",method = RequestMethod.POST)
     @ResponseBody
-    public String updateThisRequirementRecord(HttpServletRequest request)
+    public String deleteThisRequirementRecord(HttpServletRequest request)
     {
         String id = request.getParameter("id");
         if(requirementChangeRecordService.deleteRequirementRecordById(id)){

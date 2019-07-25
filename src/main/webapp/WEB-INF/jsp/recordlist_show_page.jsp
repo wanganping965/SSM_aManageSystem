@@ -81,7 +81,7 @@
             remoteSort: false,
             rowStyler:function(rowIndex,rowData){
                 if(rowIndex % 2==0){
-                    return 'color:gray';
+                    return 'background-color:pink;color:blue;font-weight:bold;';
                 }
             },//设置列的style，可以改变字体颜色，背景颜色等
             frozenColumns:[[]], // 滚动条
@@ -246,10 +246,6 @@
                 var dc = $(this).data('datagrid').dc;
                 var header2Row = dc.header2.find('tr.datagrid-header-row');
                 dc.body2.find('table').append(header2Row.clone().css({"visibility":"hidden"}));
-//                    $('#dataList').datagrid('insertRow',{
-//                        row:{}
-//                    })
-//                    $("tr[datagrid-row-index='0']").css({"visibility":"hidden"});
             }
         }
     });
@@ -265,7 +261,7 @@
         var datagrid = $('#dataList');
         //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
         var row = datagrid.datagrid("getChecked");
-        if(row){
+        if(row.length >= 1){
             $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">删除选中的'+row.length+'条</span>数据？',function (r) {
                 if(r){
                     for(var i = row.length-1;i >= 0; i --){
@@ -282,6 +278,8 @@
                     }
                 }
             });
+        }else{
+            $.messager.alert('提示','您未勾选要删除的数据',"info");
         }
     }
 

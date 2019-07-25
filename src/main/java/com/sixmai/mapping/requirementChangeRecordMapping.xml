@@ -22,6 +22,12 @@
         SELECT found_rows() AS recordCounts;
     </select>
 
+    <select id="findRequirementRecordsByDemand_id" resultMap="RequirementChangeRecord,recordCounts">
+        SELECT SQL_CALC_FOUND_ROWS * FROM requirementChangeRecord
+        WHERE demand_id=#{demand_id} ORDER BY record_update_time DESC;
+
+        SELECT found_rows() AS recordCounts;
+    </select>
 
 
     <select id="findAllRequirementByOwnedTeam" resultType="com.sixmai.domain.RequirementChangeRecord">
@@ -40,11 +46,6 @@
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
         limit #{start},#{rows}
-    </select>
-
-    <select id="findRequirementRecordsByDemand_id" resultType="com.sixmai.domain.RequirementChangeRecord">
-        SELECT * FROM requirementChangeRecord
-        WHERE demand_id=#{demand_id} ORDER BY record_update_time DESC
     </select>
 
     <select id="findRequirementRecordsById" resultType="RequirementChangeRecord" parameterType="int">

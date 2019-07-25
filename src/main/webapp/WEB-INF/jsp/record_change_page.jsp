@@ -18,15 +18,17 @@
 %>
 <html>
 <head>
-    <title>需求列表页</title>
+    <title>具体需求修订页</title>
 
 
 </head>
 <body>
-<h2>首页 -- 所有需求列表页面</h2>
+<a id="btn" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回列表页</a>
 <div id="content"  style="">
-    <a id="btn_keep" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存修改</a>
-    <a id="btn_cancel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-back'">取消</a>
+    <div>
+        <a id="btn_keep" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">保存修改</a>
+        <a id="btn_cancel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-undo'">取消</a>
+    </div>
     <table id="dataList" class="easyui-datagrid">
 
     </table>
@@ -217,7 +219,7 @@
                 {field: 'official_versionNumber',title:'正式版本号',width:140,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='officialVersionNumber2' style=\"width:140px;height: auto\" value=\""+ value +"\">";
                 }},
-//                TODO
+
                 {field: 'shedule_functionTestVersion_submit',title:'计划功能测试版本提交日期',width:180,formatter:function (value,row,index) {
 //                    $('#textbox-sheduleFunctionTestVersionSubmit-value').val(transformerDateToStyle(value));
                     return '<input id="sheduleFunctionTestVersionSubmit3" type="text" value="'+transformerDateToStyle(value)+'">';
@@ -307,7 +309,7 @@
             });
 
             $('#btn_keep').bind('click',function(){
-//            todo: 数据修改
+//            : 数据修改
                 $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">修改该条数据？',function (r) {
                     if(r){
                         var id = $("#textbox-id-value").val();
@@ -367,7 +369,7 @@
                             dataType:'text',
                             success:function (data) {
                                 if(data == 'ok'){
-                                    $.messager.alert("操作提示", "操作成功！返回列表页...","info");
+                                    $.messager.alert("操作提示", "修改成功！返回列表页...","info");
                                     var nextUrl = "/requirementManage/gotoRecordList";
                                     window.location.href = nextUrl;
                                 }

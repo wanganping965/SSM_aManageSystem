@@ -130,13 +130,12 @@
 					</table>
 				</td>
 				<td>
-					<img src="images/head.png"/>
+					<%--: 添加了一个man的头像--%>
+					<img src="/resources/easyui/themes/icons/man.png" width="120" height="120"/>
 				</td>
 			</tr>
 		</table>
-		<%--&lt;%&ndash;用于存储最终选择的提交身份&ndash;%&gt;--%>
-		<%--<input type="hidden" id="roleValue" name="role" value=""/>--%>
-		<%----%>
+
 	</form>
 
 </div>

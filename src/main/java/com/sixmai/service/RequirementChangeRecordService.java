@@ -37,10 +37,12 @@ public interface RequirementChangeRecordService {
     int getTotalFoundRecordNumbers();
 
     //获取真个需求的变更的历史版本的列表，从上到下依次为最近依次更改和最开始登入的需求
-    ArrayList<ArrayList<String>> findThisRequirementHistoryVersion(String demand_id);
+    Map<String,Object> findThisRequirementHistoryVersion(String demand_id,String page,String rows);
 
     // 获取具体的对应于唯一标识id 的那条记录
     ArrayList<Map<String, Object>> getThisDetailRecordsById(String id);
+
+    ArrayList<Map<String,Object>> getNullDetailRecord();
 
 
     // *********************** 删除 ***********************

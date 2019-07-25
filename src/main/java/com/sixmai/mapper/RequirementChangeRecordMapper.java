@@ -2,6 +2,7 @@ package com.sixmai.mapper;
 
 import com.sixmai.domain.RequirementChangeRecord;
 import org.apache.ibatis.annotations.Param;
+import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface RequirementChangeRecordMapper {
 //    int findTheNumberOfAllRequirementByAndUsername(int role,String username);
 
     //获取同一需求编号的历史变更版本列表
-    List<RequirementChangeRecord> findRequirementRecordsByDemand_id(String demand_id);
+    List<Object> findRequirementRecordsByDemand_id(@Param("demand_id") String demand_id, @Param("start") int start, @Param("rows") int rows);
     //根据具体的id，查找到具体的记录
     RequirementChangeRecord findRequirementRecordsById(int id);
 
