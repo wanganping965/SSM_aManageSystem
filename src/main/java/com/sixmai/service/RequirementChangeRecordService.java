@@ -40,7 +40,8 @@ public interface RequirementChangeRecordService {
     Map<String,Object> findThisRequirementHistoryVersion(String demand_id,String page,String rows);
 
     // 获取具体的对应于唯一标识id 的那条记录
-    ArrayList<Map<String, Object>> getThisDetailRecordsById(String id);
+    ArrayList<Map<String, Object>>
+    getThisDetailRecordsById(String id);
 
     ArrayList<Map<String,Object>> getNullDetailRecord();
 

@@ -36,6 +36,9 @@
     <%--hidden存值区域--%>
     <input type="hidden" class="temp-value-kept" id="textbox-id-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-priority-value" value="1">
+
+    <input type="hidden" class="temp-value-kept" id="textbox-priorityDesc-value" value="1">
+
     <input type="hidden" class="temp-value-kept" id="textbox-demandStatus-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-batch-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-leadOrCooperate-value" value="1">
@@ -123,8 +126,13 @@
                     console.log($('#textbox-priority-value').val());
 
                     return '<select id="priority1" class="easyui-combobox" name="priority1" style="width:60px;"><option value="1">高</option><option value="2">中</option><option value="3">低</option></select>';
-            }},
-                {field: 'priority_desc',title:'优先级说明',width:80},
+                }},
+//                TODO
+                {field: 'priority_desc',title:'优先级说明',width:305,formatter:function (value,row,index) {
+
+                    $('#textbox-priorityDesc-value').val(value);
+                    return '<input id="priority_desc" style="width:150px;height: 60px" name="priority_desc" value="">';
+                }},
 
                 {field: 'business_value',title:'业务价值',width:150,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='businessValue2' style=\"width:150px;height: 60px\" value=\""+ value +"\">";
@@ -308,6 +316,22 @@
                 required:true
             });
 
+//            TODO 从后台获取的需要展示的值，展示出来
+            $('#priority_desc').combobox({
+                url:'../../../combobox_data.json',
+                panelHeight:200,
+                width:300,
+                valueField:'id',
+                textField:'text',
+                multiple:true, //设置可以复选
+                formatter:function (row) {
+                    var opts = $(this).combobox('options');
+                    return '<input type="checkbox" class="combobox-checkbox">' + row[opts.textField];//关键在这一步，在项前面加一个checkbox。opts这个是combobox对象。
+
+                }
+            });
+
+
             $('#btn_keep').bind('click',function(){
 //            : 数据修改
                 $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">修改该条数据？',function (r) {
@@ -333,7 +357,7 @@
                                 'demand_class':$("#demandClass2").val(),
                                 'demand_content':$("#demandContent2").val(),
                                 'priority':$("#priority1").val().toString(),
-                                'priority_desc':data.priority_desc.toString(),
+                                'priority_desc':$("#priority_desc").val(),
                                 'business_value':$("#businessValue2").val(),
                                 'demand_status':$("#demandStatus1").val().toString(),
                                 'batch':$("#batch1").val().toString(),
@@ -379,13 +403,8 @@
                                 }
                             }
                         })
-
-
-
-//                    var checkValue=$("#priority1").val();  //获取Select选择的Value
                     }
                 });
-//            alert("保存修改");
             });
 
             $('#btn_cancel').bind('click',function(){

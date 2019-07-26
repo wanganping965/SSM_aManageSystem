@@ -1,5 +1,9 @@
 package com.sixmai.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sixmai.domain.RequirementChangeRecord;
 import com.sixmai.mapper.RequirementChangeRecordMapper;
 import com.sixmai.service.RequirementChangeRecordService;
@@ -8,6 +12,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -23,9 +28,36 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         this.requirementChangeRecordMapper = requirementChangeRecordMapper;
     }
 
-    private String dateFormatterTransfer(String before){
+    private String dateFormatterTransfer(String before) {
         String[] m_d_y = before.split("/");
-        return m_d_y[2]+"-"+m_d_y[0]+"-"+m_d_y[1];
+        return m_d_y[2] + "-" + m_d_y[0] + "-" + m_d_y[1];
+    }
+
+    /**
+     * 读取json文件，返回json串
+     * @param fileName
+     * @return
+     */
+    public static String readJsonFile(String fileName) {
+        String jsonStr = "";
+        try {
+            File jsonFile = new File(fileName);
+            FileReader fileReader = new FileReader(jsonFile);
+
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            int ch = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            fileReader.close();
+            reader.close();
+            jsonStr = sb.toString();
+            return jsonStr;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -47,9 +79,39 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         RequirementChangeRecord record = new RequirementChangeRecord();
 //        List<RequirementChangeRecord> recordList = requirementChangeRecordMapper.findRequirementRecordsByDemand_id(demand_id);
 //        if(recordList.size() == 0){
+        String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+        System.out.println("classpath is: " + classpath);
+        String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+        System.out.println("webappRoot is: " + webappRoot);
+        String json_path = webappRoot + "combobox_data.json";
+
+        //TODO 读取文件中的json内容
+        String json_str = readJsonFile(json_path);
+        System.out.println(">>>>>>>>The json string's content is: "+json_str);
+//TODO
+//        TODO
+//        List<Map<String,Object>> listMap = JSON.parseObject(json_str,new TypeReference<List<Map<String,Object>>(){});
+        List<Map<String,Object>> json_format = (List<Map<String,Object>>) JSONArray.parse(json_str);
+
+        System.out.println("the json file read content is: "+json_format);
+        String[] priority_desc_list = priority_desc.split(",|，");
+        String res_desc = "";
+
+        for(int i=0;i<priority_desc_list.length; i ++){
+            if(priority_desc_list[i].length() == 1){
+                if(Integer.parseInt(priority_desc_list[i]) <= 5){
+                    res_desc +=","+ priority_desc_list[i];
+                }else{
+                    res_desc += ","+json_format.get(Integer.parseInt(priority_desc_list[i])-1).get("text");
+                }
+            }else{
+                res_desc +=","+ priority_desc_list[i];
+            }
+        }
+
         record.setAll(0, demand_id, demand_name, demand_details,
                 demand_class, demand_content, Integer.parseInt(priority),
-                Integer.parseInt(priority_desc), business_value, Integer.parseInt(demand_status),
+                res_desc, business_value, Integer.parseInt(demand_status),
                 Integer.parseInt(batch), business_department, business_team,
                 Integer.parseInt(leadOrCooperate), product_name, Integer.parseInt(version_status),
                 workload, external_workload, vender_workload,
@@ -76,15 +138,15 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
     }
 
     @Override
-    public Map<String,Object> findAllRequirementsRecord(String page, String rows) {
+    public Map<String, Object> findAllRequirementsRecord(String page, String rows) {
         int nums = Integer.parseInt(rows);
         int start = (Integer.parseInt(page) - 1) * nums;
         ArrayList<Map<String, Object>> recordlist = new ArrayList<Map<String, Object>>();
         List<Object> recordss = requirementChangeRecordMapper.findAllRequirement(start, nums);
         Long total = new Long(0);
-        if(CollectionUtils.isNotEmpty(recordss)){
-            List<RequirementChangeRecord> records = (List<RequirementChangeRecord>)recordss.get(0);
-            total = ((List<Long>)recordss.get(1)).get(0);
+        if (CollectionUtils.isNotEmpty(recordss)) {
+            List<RequirementChangeRecord> records = (List<RequirementChangeRecord>) recordss.get(0);
+            total = ((List<Long>) recordss.get(1)).get(0);
 
 
             for (int i = 0; i < records.size(); i++) {
@@ -124,22 +186,22 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
             }
         }
 
-        Map<String,Object> res = new HashMap<String,Object>();
-        res.put("rows",recordlist);
-        res.put("total",total);
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("rows", recordlist);
+        res.put("total", total);
         return res;
     }
 
     @Override
-    public Map<String,Object> findThisRequirementHistoryVersion(String demand_id,String page, String rows) {
+    public Map<String, Object> findThisRequirementHistoryVersion(String demand_id, String page, String rows) {
         int nums = Integer.parseInt(rows);
         int start = (Integer.parseInt(page) - 1) * nums;
         ArrayList<Map<String, Object>> recordlist = new ArrayList<Map<String, Object>>();
-        List<Object> recordss = requirementChangeRecordMapper.findRequirementRecordsByDemand_id(demand_id,nums,start);
+        List<Object> recordss = requirementChangeRecordMapper.findRequirementRecordsByDemand_id(demand_id, nums, start);
         Long total = new Long(0);
-        if(CollectionUtils.isNotEmpty(recordss)){
-            List<RequirementChangeRecord> records = (List<RequirementChangeRecord>)recordss.get(0);
-            total = ((List<Long>)recordss.get(1)).get(0);
+        if (CollectionUtils.isNotEmpty(recordss)) {
+            List<RequirementChangeRecord> records = (List<RequirementChangeRecord>) recordss.get(0);
+            total = ((List<Long>) recordss.get(1)).get(0);
 
             for (int i = 0; i < records.size(); i++) {
                 Map<String, Object> tmp = new HashMap<String, Object>();
@@ -196,9 +258,9 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
             }
         }
 
-        Map<String,Object> res = new HashMap<String,Object>();
-        res.put("rows",recordlist);
-        res.put("total",total);
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("rows", recordlist);
+        res.put("total", total);
         return res;
     }
 
@@ -322,6 +384,22 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         return requirementChangeRecordMapper.getTotalFoundRecordNumber();
     }
 
+    // 清空已有的文件内容，以便下次重新写入新的内容
+    public static void clearInfoForFile(String fileName) {
+        File file = new File(fileName);
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("");
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public ArrayList<Map<String, Object>> getThisDetailRecordsById(String id) {
 
@@ -336,6 +414,66 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         tmp.put("demand_class", "" + record.getDemand_class());
         tmp.put("demand_content", "" + record.getDemand_content());
         tmp.put("priority", record.getPriority());
+
+        //TODO 提取到priority_desc字段，拆分做一个下来，写入一个combobox对应的
+        String priority_desc = record.getPriority_desc();
+        String[] desc_list = priority_desc.split(",|，");
+        boolean[] tan = {false, false, false, false, false};
+        ArrayList<Map<String, Object>> prio_desc_json = new ArrayList<Map<String, Object>>();
+        for (int i = 1; i < desc_list.length; i++) {
+            // 记录预设的优先级说明选项，哪些被选择
+            if (desc_list[i].length() == 1) {
+                tan[Integer.parseInt(desc_list[i])] = true;
+            }
+        }
+        String[] priority_description = {"业务部门年度重点工作", "业务部门绩效目标", "行领导关注", "业务负责人关注", "监管要求"};
+        for (int i = 0; i < 5; i++) {
+            if (tan[i]) {
+                Map<String, Object> temp = new HashMap<String, Object>();
+                temp.put("id", i + 1);
+                temp.put("text", priority_description[i]);
+                temp.put("selected", true);
+                prio_desc_json.add(temp);
+            } else {
+                Map<String, Object> temp = new HashMap<String, Object>();
+                temp.put("id", i + 1);
+                temp.put("text", priority_description[i]);
+                prio_desc_json.add(temp);
+            }
+
+        }
+        int count = 6;
+        for (int i = desc_list.length - 1; i >= 0; i--) {
+            if (desc_list[i].length() == 1)
+                break;
+            Map<String, Object> temp = new HashMap<String, Object>();
+            temp.put("id", count);
+            temp.put("text", desc_list[i]);
+            temp.put("selected", true);
+            prio_desc_json.add(temp);
+            count++;
+        }
+
+        System.out.println("the prio_desc_json 输入的数据是：" + prio_desc_json);
+
+        // 将数据prio_desc_json写入到对应的json文件中，
+        String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+        System.out.println("classpath is: " + classpath);
+        String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+        System.out.println("webappRoot is: " + webappRoot);
+
+        String json_path = webappRoot + "combobox_data.json";
+        System.out.println("json_path is: " + json_path);
+
+        clearInfoForFile(json_path); //先清空内容，再写入
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File(json_path), prio_desc_json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         tmp.put("priority_desc", "" + record.getPriority_desc());
         tmp.put("business_value", "" + record.getBusiness_value());
         tmp.put("demand_status", record.getDemand_status());
@@ -381,11 +519,11 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         tmp.put("id", "" + 1);
         tmp.put("demand_id", "FR-XXXXXX-XXXXX");
         tmp.put("demand_name", " ");
-        tmp.put("demand_details"," ");
+        tmp.put("demand_details", " ");
         tmp.put("demand_class", " ");
         tmp.put("demand_content", " ");
         tmp.put("priority", 3);
-        tmp.put("priority_desc",1);
+        tmp.put("priority_desc", 1);
         tmp.put("business_value", " ");
         tmp.put("demand_status", 1);
         tmp.put("batch", 1);

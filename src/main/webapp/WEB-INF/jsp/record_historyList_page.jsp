@@ -320,8 +320,3 @@
 </script>
 </body>
 </html>
-
-<body>
-
-</body>
-</html>

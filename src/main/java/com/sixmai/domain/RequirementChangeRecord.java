@@ -14,7 +14,7 @@ public class RequirementChangeRecord {
     private String demand_class;
     private String demand_content;
     private int priority;
-    private int priority_desc;
+    private String priority_desc;
     private String business_value;
     private int demand_status;
     private int batch;
@@ -113,7 +113,7 @@ public class RequirementChangeRecord {
                        String demand_class,
                        String demand_content,
                        int priority,
-                       int priority_desc,
+                       String priority_desc,
                        String business_value,
                        int demand_status,
                        int batch,
@@ -250,11 +250,11 @@ public class RequirementChangeRecord {
         this.priority = priority;
     }
 
-    public int getPriority_desc() {
+    public String getPriority_desc() {
         return priority_desc;
     }
 
-    public void setPriority_desc(int priority_desc) {
+    public void setPriority_desc(String priority_desc) {
         this.priority_desc = priority_desc;
     }
 
