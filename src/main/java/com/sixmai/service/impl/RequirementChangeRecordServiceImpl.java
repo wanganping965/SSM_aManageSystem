@@ -156,7 +156,33 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
                 tmp.put("demand_id", "" + record.getDemand_id());
                 tmp.put("demand_name", "" + record.getDemand_name());
                 tmp.put("priority", record.getPriority());
-                tmp.put("priority_desc", "" + record.getPriority_desc());
+                
+                String priority_desc = record.getPriority_desc();
+                String[] priority_desc_list = priority_desc.split(",|，");//后台数据库里面该字段的设置标准，第一个,号之前没有可用值
+
+                String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+                String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+                String json_path = webappRoot + "combobox_data.json";
+
+                // 读取文件中的json内容
+                String json_str = readJsonFile(json_path);
+                List<Map<String,Object>> json_format = (List<Map<String,Object>>) JSONArray.parse(json_str);
+
+                String res_desc = "";
+
+                for(int j=1;j < priority_desc_list.length; j ++){
+                    if(priority_desc_list[j].length() == 1){
+                        if(j==1) {
+                            res_desc += "1."+json_format.get(Integer.parseInt(priority_desc_list[j]) - 1).get("text");
+                        }else {
+                            res_desc += "," +j+"."+ json_format.get(Integer.parseInt(priority_desc_list[j]) - 1).get("text");
+                        }
+                    }else{
+                        res_desc +=","+j+"."+ priority_desc_list[j];
+                    }
+                }
+                
+                tmp.put("priority_desc", res_desc);
                 tmp.put("demand_status", record.getDemand_status());
                 tmp.put("batch", record.getBatch());
                 tmp.put("business_department", "" + record.getBusiness_department());
@@ -215,7 +241,34 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
 
                 tmp.put("demand_content", "" + record.getDemand_content());
                 tmp.put("priority", record.getPriority());
-                tmp.put("priority_desc", "" + record.getPriority_desc());
+                
+                
+                String priority_desc = record.getPriority_desc();
+                String[] priority_desc_list = priority_desc.split(",|，");//后台数据库里面该字段的设置标准，第一个,号之前没有可用值
+
+                String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+                String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+                String json_path = webappRoot + "combobox_data.json";
+
+                // 读取文件中的json内容
+                String json_str = readJsonFile(json_path);
+                List<Map<String,Object>> json_format = (List<Map<String,Object>>) JSONArray.parse(json_str);
+
+                String res_desc = "";
+
+                for(int j=1;j < priority_desc_list.length; j ++){
+                    if(priority_desc_list[j].length() == 1){
+                        if(j==1) {
+                            res_desc +="1." + json_format.get(Integer.parseInt(priority_desc_list[j]) - 1).get("text");
+                        }else {
+                            res_desc += ","+j+"." + json_format.get(Integer.parseInt(priority_desc_list[j]) - 1).get("text");
+                        }
+                    }else{
+                        res_desc +=","+j+"."+ priority_desc_list[j];
+                    }
+                }
+
+                tmp.put("priority_desc", res_desc);
                 tmp.put("business_value", "" + record.getBusiness_value());
                 tmp.put("demand_status", record.getDemand_status());
 
@@ -418,15 +471,19 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         //TODO 提取到priority_desc字段，拆分做一个下来，写入一个combobox对应的
         String priority_desc = record.getPriority_desc();
         String[] desc_list = priority_desc.split(",|，");
+        String desc_res = "";
         boolean[] tan = {false, false, false, false, false};
+        String[] priority_description = {"业务部门年度重点工作", "业务部门绩效目标", "行领导关注", "业务负责人关注", "监管要求"};
+
         ArrayList<Map<String, Object>> prio_desc_json = new ArrayList<Map<String, Object>>();
         for (int i = 1; i < desc_list.length; i++) {
             // 记录预设的优先级说明选项，哪些被选择
             if (desc_list[i].length() == 1) {
                 tan[Integer.parseInt(desc_list[i])] = true;
+                desc_res += priority_description[Integer.parseInt(desc_list[i])-1]+"; ";//已有内部说明查询字典获取text
             }
         }
-        String[] priority_description = {"业务部门年度重点工作", "业务部门绩效目标", "行领导关注", "业务负责人关注", "监管要求"};
+        //String[] priority_description = {"业务部门年度重点工作", "业务部门绩效目标", "行领导关注", "业务负责人关注", "监管要求"};
         for (int i = 0; i < 5; i++) {
             if (tan[i]) {
                 Map<String, Object> temp = new HashMap<String, Object>();
@@ -452,6 +509,8 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
             temp.put("selected", true);
             prio_desc_json.add(temp);
             count++;
+            
+            desc_res += desc_list[i]+"; ";//其他说明直接连接
         }
 
         System.out.println("the prio_desc_json 输入的数据是：" + prio_desc_json);
@@ -474,7 +533,7 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         }
 
 
-        tmp.put("priority_desc", "" + record.getPriority_desc());
+        tmp.put("priority_desc", res);
         tmp.put("business_value", "" + record.getBusiness_value());
         tmp.put("demand_status", record.getDemand_status());
         tmp.put("batch", record.getBatch());
