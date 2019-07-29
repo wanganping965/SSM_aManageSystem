@@ -36,6 +36,7 @@
     <%--hidden存值区域--%>
     <input type="hidden" class="temp-value-kept" id="textbox-id-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-priority-value" value="1">
+    <input type="hidden" class="temp-value-kept" id="textbox-priorityDesc-value" value ="1">
     <input type="hidden" class="temp-value-kept" id="textbox-demandStatus-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-batch-value" value="1">
     <input type="hidden" class="temp-value-kept" id="textbox-leadOrCooperate-value" value="1">
@@ -119,7 +120,11 @@
 
                     return '<select id="priority1" class="easyui-combobox" name="priority1" style="width:60px;"><option value="1">高</option><option value="2">中</option><option value="3">低</option></select>';
                 }},
-                {field: 'priority_desc',title:'优先级说明',width:80},
+                {field: 'priority_desc',title:'优先级说明',width:305,formatter:function (value,row,index) {
+
+                    $('#textbox-priorityDesc-value').val(value);
+                    return '<input id="priority_desc" style="width:150px;height: 60px" name="priority_desc" value="">';
+                }},
 
                 {field: 'business_value',title:'业务价值',width:150,formatter:function (value,row,index) {
                     return "<input class=\"easyui-textbox\" id='businessValue2' style=\"width:150px;height: 60px\" value=\""+ value +"\">";
@@ -301,21 +306,29 @@
             $('#updateDate3').datebox({
                 required:true
             });
+            //  从后台获取的需要展示的值，展示出来(多选下拉列表，可添加)
+            $('#priority_desc').combobox({
+                url:'../../../combobox_data.json',
+                panelHeight:200,
+                width:300,
+                valueField:'id',
+                textField:'text',
+                multiple:true, //设置可以复选
+                formatter:function (row) {
+                    var opts = $(this).combobox('options');
+                    return '<input type="checkbox" class="combobox-checkbox">' + row[opts.textField];//关键在这一步，在项前面加一个checkbox。opts这个是combobox对象。
+
+                }
+            });
+
 
             $('#btn_keep').bind('click',function(){
 //             数据修改
                 $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">新增该条需求？</span>',function (r) {
                     if(r){
-                        var id = $("#textbox-id-value").val();
-                        var rowIndex = $('#dataList').datagrid('getRowIndex', parseInt(id));//id是关键字值
-                        var data = $('#dataList').datagrid('getData').rows[rowIndex];
-
-//                        console.log("demand_id is : "+data.demand_id);
-//                        console.log("demand_name is : "+ $("#demandName2").val());
-//                        console.log("demand_details is: "+$("#demandDetails2").val());
-//                        console.log("demand_status is: "+$("#demandStatus1").val().toString());
-//                        console.log("updateDate get by val is: "+$("#updateDate3").val());
-//                        console.log("updateDate get by getValue is: "+$("#updateDate3").datebox("getValue"));
+//                        var id = $("#textbox-id-value").val();
+//                        var rowIndex = $('#dataList').datagrid('getRowIndex', parseInt(id));//id是关键字值
+//                        var data = $('#dataList').datagrid('getData').rows[rowIndex];
 
                         $.ajax({
                             url:'/requirementManage/updateThisRequirementRecord',
@@ -327,7 +340,7 @@
                                 'demand_class':$("#demandClass2").val(),
                                 'demand_content':$("#demandContent2").val(),
                                 'priority':$("#priority1").val().toString(),
-                                'priority_desc':data.priority_desc.toString(),
+                                'priority_desc':$("#priority_desc").val(),
                                 'business_value':$("#businessValue2").val(),
                                 'demand_status':$("#demandStatus1").val().toString(),
                                 'batch':$("#batch1").val().toString(),

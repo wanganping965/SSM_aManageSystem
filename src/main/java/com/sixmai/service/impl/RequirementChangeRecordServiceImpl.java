@@ -533,7 +533,7 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         }
 
 
-        tmp.put("priority_desc", res);
+        tmp.put("priority_desc",desc_res);
         tmp.put("business_value", "" + record.getBusiness_value());
         tmp.put("demand_status", record.getDemand_status());
         tmp.put("batch", record.getBatch());
@@ -582,7 +582,35 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         tmp.put("demand_class", " ");
         tmp.put("demand_content", " ");
         tmp.put("priority", 3);
-        tmp.put("priority_desc", 1);
+
+        // 提取到priority_desc字段，拆分做一个下来，写入一个combobox对应的json文件中
+        String desc_res = "";
+        String[] priority_description = {"业务部门年度重点工作", "业务部门绩效目标", "行领导关注", "业务负责人关注", "监管要求"};
+
+        ArrayList<Map<String, Object>> prio_desc_json = new ArrayList<Map<String, Object>>();
+
+        for (int i = 0; i < 5; i++) {
+            Map<String, Object> temp = new HashMap<String, Object>();
+            temp.put("id", i + 1);
+            temp.put("text", priority_description[i]);
+            prio_desc_json.add(temp);
+        }
+
+        // 将数据prio_desc_json写入到对应的json文件中，
+        String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+        String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+        String json_path = webappRoot + "combobox_data.json";
+
+        //先清空内容，再写入
+        clearInfoForFile(json_path);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File(json_path), prio_desc_json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        tmp.put("priority_desc", "");
         tmp.put("business_value", " ");
         tmp.put("demand_status", 1);
         tmp.put("batch", 1);

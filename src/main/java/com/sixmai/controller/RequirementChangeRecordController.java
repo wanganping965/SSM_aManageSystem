@@ -157,9 +157,6 @@ public class RequirementChangeRecordController {
                                               @RequestParam("description")String description,
                                               @ModelAttribute("role")String team_responsible_for, @ModelAttribute("username")String user_last_changed)
     {
-        String username = team_responsible_for;
-        String it = user_last_changed;
-
         //获取当前的时间 年月日时分秒
         Date nowTime = new Date(System.currentTimeMillis());
         SimpleDateFormat sdFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

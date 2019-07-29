@@ -17,6 +17,7 @@
 </head>
 <body>
 <h2>该需求历史版本列表页</h2>
+<a id="btn" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回列表页</a>
 <div id="content"  style="">
     <table id="dataList" class="easyui-datagrid">
 

@@ -24,6 +24,8 @@
 </head>
 <body>
 <h2>首页 -- 所有需求列表页面</h2>
+<a id="btn" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回列表页</a>
+
 <div id="content"  style="">
     <table id="dataList" class="easyui-datagrid">
 
@@ -71,6 +73,12 @@
                 iconCls: 'icon-add',
                 handler: function(){
                     viewThisRecord();
+                }
+            },'-',{
+                text:"查看历史修改记录",
+                iconCls: 'icon-filter',
+                handler: function(){
+                    viewThisRecordHistoryList();
                 }
             }],
             striped:true, // 条纹化，奇偶行不同背景
@@ -315,6 +323,20 @@
     function addRecord() {
         var nextUrl = "/requirementManage/gotoRecordAdd";
         window.location.href = nextUrl;
+    }
+
+    function viewThisRecordHistoryList(){
+        var datagrid = $('#dataList');
+        //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
+        var row = datagrid.datagrid("getChecked");
+        if(row.length == 1){
+            var nextUrl = "/requirementManage/gotoRecordHistoryList?demand_id="+row[0].demand_id;
+            window.location.href = nextUrl;
+        }else if(row.length == 0){
+            $.messager.alert('提示','您还未选择记录！',"info");
+        }else{
+            $.messager.alert('提示','您选择超过一条记录！',"info");
+        }
     }
 </script>
 </body>
