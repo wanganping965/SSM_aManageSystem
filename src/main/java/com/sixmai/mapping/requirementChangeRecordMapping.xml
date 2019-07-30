@@ -14,11 +14,11 @@
     <select id="findAllRequirement" resultMap="RequirementChangeRecord,recordCounts">
         SELECT SQL_CALC_FOUND_ROWS t.*
         FROM (SELECT * FROM requirementChangeRecord
+              WHERE team_responsible_for=#{role}
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
         limit #{start},#{rows}
         ;
-
         SELECT found_rows() AS recordCounts;
     </select>
 
@@ -26,7 +26,7 @@
          SELECT SQL_CALC_FOUND_ROWS t.*
         FROM (SELECT * FROM requirementChangeRecord
               <where>
-
+                  team_responsible_for=#{role}
                   <if test="demand_id != null and demand_id != ''">
                       and demand_id = #{demand_id}
                   </if>

@@ -15,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.print.DocFlavor;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,13 +40,14 @@ public class RequirementChangeRecordController {
      */
     @RequestMapping(value = "/getAllRecordList")
     @ResponseBody
-    public Map<String,Object> getAllRequirementRecordList(HttpServletRequest request)
+    public Map<String,Object> getAllRequirementRecordList(HttpServletRequest request,
+                                                          @ModelAttribute("role")String role)
     {
         // 页码和每页记录的条数
         String start = request.getParameter("page");
         String rows = request.getParameter("rows");
 
-        Map<String,Object> json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
+        Map<String,Object> json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows,role);
 //        System.out.println("total is: "+json_RowsDataWithTotalNumbers.get("total"));
 
         return json_RowsDataWithTotalNumbers;
@@ -73,7 +75,7 @@ public class RequirementChangeRecordController {
                                                         String task_code, String project_code,
                                                         String is_newAddResources, String is_dataTransfer,
                                                         String is_performanceTest,String task_type,
-                                                         String role, HttpServletRequest request)
+                                                         @ModelAttribute("role") String role, HttpServletRequest request)
        {
         // 页码和每页记录的条数
         String start = request.getParameter("page");
@@ -85,7 +87,7 @@ public class RequirementChangeRecordController {
                 version_status==null && development_model==null && product_name==null && task_code==null &&
                  project_code==null &&  is_newAddResources==null && is_dataTransfer==null &&  is_performanceTest==null
                 && task_type==null){
-            json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
+            json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows,role);
         }else{
             json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecordByFilters(start,rows,
                     demand_id, demand_name, priority,  priority_desc.trim(), demand_status,  batch, business_department,  business_team,

@@ -138,11 +138,11 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
     }
 
     @Override
-    public Map<String, Object> findAllRequirementsRecord(String page, String rows) {
+    public Map<String, Object> findAllRequirementsRecord(String page, String rows, String role) {
         int nums = Integer.parseInt(rows);
         int start = (Integer.parseInt(page) - 1) * nums;
         ArrayList<Map<String, Object>> recordlist = new ArrayList<Map<String, Object>>();
-        List<Object> recordss = requirementChangeRecordMapper.findAllRequirement(start, nums);
+        List<Object> recordss = requirementChangeRecordMapper.findAllRequirement(start, nums, Integer.parseInt(role));
         Long total = new Long(0);
         if (CollectionUtils.isNotEmpty(recordss)) {
             List<RequirementChangeRecord> records = (List<RequirementChangeRecord>) recordss.get(0);
@@ -232,7 +232,7 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
                 Integer.parseInt(demand_status.trim()), Integer.parseInt(batch.trim()),business_department,business_team,Integer.parseInt(leadOrCooperate),
                 Integer.parseInt(version_status.trim()),Integer.parseInt(development_model.trim()),product_name,task_code,project_code,
                 Integer.parseInt(is_newAddResources.trim()),Integer.parseInt(is_dataTransfer.trim()),Integer.parseInt(is_performanceTest.trim()),
-                Integer.parseInt(task_type.trim()),role);
+                Integer.parseInt(task_type.trim()),Integer.parseInt(role));
         Long total = new Long(0);
         if (CollectionUtils.isNotEmpty(recordss)) {
             List<RequirementChangeRecord> records = (List<RequirementChangeRecord>) recordss.get(0);

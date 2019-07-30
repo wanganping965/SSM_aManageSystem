@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface RequirementChangeRecordMapper {
     // 用于展示所用的需求变更数据
-    List<Object> findAllRequirement(@Param("start") int start, @Param("rows") int rows);
+    List<Object> findAllRequirement(@Param("start") int start, @Param("rows") int rows, @Param("role") int role);
 
     List<Object> findAllRequirementBYFilters(@Param("start") int start, @Param("rows") int rows,
                                              @Param("demand_id") String demand_id, @Param("demand_name") String demand_name,
@@ -24,7 +24,7 @@ public interface RequirementChangeRecordMapper {
                                              @Param("task_code")String task_code, @Param("project_code")String project_code,
                                              @Param("is_newAddResources")int is_newAddResources, @Param("is_dataTransfer")int is_dataTransfer,
                                              @Param("is_performanceTest")int is_performanceTest, @Param("task_type")int task_type,
-                                             @Param("role") String role);
+                                             @Param("role") int role);
 //    int findTheNumberOfAllRequirement();
     int getTotalFoundRecordNumber();
     //用于获取本团队的所有能处理的需求

@@ -31,7 +31,7 @@ public interface RequirementChangeRecordService {
                                  String data_of_production, String lastest_progress, String description,
                                  String team_responsible_for, String user_last_changed,String record_update_time);
     // *********************** 查看 ***********************
-    Map<String,Object> findAllRequirementsRecord(String page, String rows);
+    Map<String,Object> findAllRequirementsRecord(String page, String rows, String role);
     Map<String,Object> findAllRequirementsRecordByFilters(String page, String rows,String demand_id, String demand_name,
                                                           String priority, String priority_desc,
                                                           String demand_status, String batch,
