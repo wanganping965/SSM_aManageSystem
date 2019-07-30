@@ -32,6 +32,16 @@ public interface RequirementChangeRecordService {
                                  String team_responsible_for, String user_last_changed,String record_update_time);
     // *********************** 查看 ***********************
     Map<String,Object> findAllRequirementsRecord(String page, String rows);
+    Map<String,Object> findAllRequirementsRecordByFilters(String page, String rows,String demand_id, String demand_name,
+                                                          String priority, String priority_desc,
+                                                          String demand_status, String batch,
+                                                          String business_department, String business_team,
+                                                          String leadOrCooperate, String version_status,
+                                                          String development_model, String product_name,
+                                                          String task_code, String project_code,
+                                                          String is_newAddResources, String is_dataTransfer,
+                                                          String is_performanceTest,String task_type,String role);
+
     ArrayList<Map<String, Object>> findAllRequirementByOwnedTeam(String role,String page,String rows);
     ArrayList<Map<String, Object>> findAllRequirementByAndUsername(String role,String username,String page,String rows);
     int getTotalFoundRecordNumbers();

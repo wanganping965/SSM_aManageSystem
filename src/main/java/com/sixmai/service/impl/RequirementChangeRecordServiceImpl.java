@@ -219,6 +219,96 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
     }
 
     @Override
+    public Map<String, Object> findAllRequirementsRecordByFilters(String page, String rows, String demand_id, String demand_name, String priority, String priority_desc,
+                                                                  String demand_status, String batch, String business_department, String business_team, String leadOrCooperate,
+                                                                  String version_status, String development_model, String product_name, String task_code, String project_code,
+                                                                  String is_newAddResources, String is_dataTransfer, String is_performanceTest, String task_type,String role) {
+        int nums = Integer.parseInt(rows);
+        int start = (Integer.parseInt(page) - 1) * nums;
+        ArrayList<Map<String, Object>> recordlist = new ArrayList<Map<String, Object>>();
+
+        System.out.println("demand_name in service layer is:"+ demand_name);
+        List<Object> recordss = requirementChangeRecordMapper.findAllRequirementBYFilters(start, nums,demand_id,demand_name,Integer.parseInt(priority.trim()),priority_desc,
+                Integer.parseInt(demand_status.trim()), Integer.parseInt(batch.trim()),business_department,business_team,Integer.parseInt(leadOrCooperate),
+                Integer.parseInt(version_status.trim()),Integer.parseInt(development_model.trim()),product_name,task_code,project_code,
+                Integer.parseInt(is_newAddResources.trim()),Integer.parseInt(is_dataTransfer.trim()),Integer.parseInt(is_performanceTest.trim()),
+                Integer.parseInt(task_type.trim()),role);
+        Long total = new Long(0);
+        if (CollectionUtils.isNotEmpty(recordss)) {
+            List<RequirementChangeRecord> records = (List<RequirementChangeRecord>) recordss.get(0);
+            total = ((List<Long>) recordss.get(1)).get(0);
+
+
+            for (int i = 0; i < records.size(); i++) {
+                Map<String, Object> tmp = new HashMap<String, Object>();
+                RequirementChangeRecord record = records.get(i);
+                tmp.put("id", "" + record.getId());
+                tmp.put("demand_id", "" + record.getDemand_id());
+                tmp.put("demand_name", "" + record.getDemand_name());
+                tmp.put("priority", record.getPriority());
+
+                String priority_desc1 = record.getPriority_desc();
+                String[] priority_desc_list = priority_desc1.split(",|，");//后台数据库里面该字段的设置标准，第一个,号之前没有可用值
+
+                String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+                String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+                String json_path = webappRoot + "combobox_data.json";
+
+                // 读取文件中的json内容
+                String json_str = readJsonFile(json_path);
+                List<Map<String,Object>> json_format = (List<Map<String,Object>>) JSONArray.parse(json_str);
+
+                String res_desc = "";
+
+                for(int j=1;j < priority_desc_list.length; j ++){
+                    if(priority_desc_list[j].length() == 1){
+                        if(j==1) {
+                            res_desc += "1."+json_format.get(Integer.parseInt(priority_desc_list[j]) - 1).get("text");
+                        }else {
+                            res_desc += "," +j+"."+ json_format.get(Integer.parseInt(priority_desc_list[j]) - 1).get("text");
+                        }
+                    }else{
+                        res_desc +=","+j+"."+ priority_desc_list[j];
+                    }
+                }
+
+                tmp.put("priority_desc", res_desc);
+                tmp.put("demand_status", record.getDemand_status());
+                tmp.put("batch", record.getBatch());
+                tmp.put("business_department", "" + record.getBusiness_department());
+                tmp.put("business_team", "" + record.getBusiness_team());
+                tmp.put("leadOrCooperate", record.getLeadOrCooperate());
+                tmp.put("product_name", "" + record.getProduct_name());
+                tmp.put("version_status", record.getVersion_status());
+                tmp.put("development_model", record.getDevelopment_model());
+                tmp.put("demand_leader", "" + record.getDemand_leader());
+                tmp.put("development_leader", "" + record.getDevelopment_leader());
+                tmp.put("task_code", "" + record.getTask_code());
+                tmp.put("project_code", "" + record.getProject_code());
+                tmp.put("is_newAddResources", record.getIs_newAddResources());
+                tmp.put("is_dataTransfer", record.getIs_dataTransfer());
+                tmp.put("is_performanceTest", record.getIs_performanceTest());
+                tmp.put("update_date", "" + record.getUpdate_date());
+                tmp.put("task_type", record.getTask_type());
+                tmp.put("UAT_versionNumber", "" + record.getUAT_versionNumber());
+                tmp.put("official_versionNumber", "" + record.getOfficial_versionNumber());
+                tmp.put("shedule_functionTestVersion_submit", "" + record.getShedule_functionTestVersion_submit());
+                tmp.put("shedule_functionTestVersion_finish", "" + record.getShedule_functionTestVersion_finish());
+                tmp.put("shedule_officialVersion_submit", "" + record.getShedule_officialVersion_submit());
+                tmp.put("date_of_production", "" + record.getDate_of_production());
+                tmp.put("lastest_progress", "" + record.getLastest_progress());
+                tmp.put("description", "" + record.getDescription());
+                recordlist.add(tmp);
+            }
+        }
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("rows", recordlist);
+        res.put("total", total);
+        return res;
+    }
+
+    @Override
     public Map<String, Object> findThisRequirementHistoryVersion(String demand_id, String page, String rows) {
         int nums = Integer.parseInt(rows);
         int start = (Integer.parseInt(page) - 1) * nums;

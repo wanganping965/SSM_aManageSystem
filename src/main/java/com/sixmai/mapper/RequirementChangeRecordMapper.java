@@ -1,6 +1,7 @@
 package com.sixmai.mapper;
 
 import com.sixmai.domain.RequirementChangeRecord;
+import com.sun.tracing.dtrace.ProviderAttributes;
 import org.apache.ibatis.annotations.Param;
 import org.omg.PortableServer.POAPackage.ObjectAlreadyActive;
 
@@ -12,6 +13,18 @@ import java.util.List;
 public interface RequirementChangeRecordMapper {
     // 用于展示所用的需求变更数据
     List<Object> findAllRequirement(@Param("start") int start, @Param("rows") int rows);
+
+    List<Object> findAllRequirementBYFilters(@Param("start") int start, @Param("rows") int rows,
+                                             @Param("demand_id") String demand_id, @Param("demand_name") String demand_name,
+                                             @Param("priority") int priority, @Param("priority_desc") String priority_desc,
+                                             @Param("demand_status") int demand_status, @Param("batch") int batch,
+                                             @Param("business_department") String business_department, @Param("business_team") String business_team,
+                                             @Param("leadOrCooperate") int leadOrCooperate, @Param("version_status")int version_status,
+                                             @Param("development_model")int development_model, @Param("product_name")String product_name,
+                                             @Param("task_code")String task_code, @Param("project_code")String project_code,
+                                             @Param("is_newAddResources")int is_newAddResources, @Param("is_dataTransfer")int is_dataTransfer,
+                                             @Param("is_performanceTest")int is_performanceTest, @Param("task_type")int task_type,
+                                             @Param("role") String role);
 //    int findTheNumberOfAllRequirement();
     int getTotalFoundRecordNumber();
     //用于获取本团队的所有能处理的需求

@@ -27,7 +27,7 @@
 <div id="content"  style="">
     <div>
         <a id="btn_toUpdatePage" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">去修订该条记录</a>
-        <a id="btn_watch" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cvs'">查看该需求的过往修订版本</a>
+        <a id="btn_watch" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-filter'">查看该需求的过往修订版本</a>
     </div>
     <table id="dataList" class="easyui-datagrid">
 

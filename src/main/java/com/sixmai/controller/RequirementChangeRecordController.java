@@ -46,10 +46,58 @@ public class RequirementChangeRecordController {
         String rows = request.getParameter("rows");
 
         Map<String,Object> json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
-        System.out.println("total is: "+json_RowsDataWithTotalNumbers.get("total"));
+//        System.out.println("total is: "+json_RowsDataWithTotalNumbers.get("total"));
 
         return json_RowsDataWithTotalNumbers;
     }
+
+//    TODO 多级模糊查询
+    @RequestMapping(value = "/getAllRecordListByFilters")
+    @ResponseBody
+//    public Map<String,Object> getAllRecordListByFilters(@RequestParam("demand_id")String demand_id, @RequestParam("demand_name")String demand_name,
+//                                                        @RequestParam("priority")String priority, @RequestParam("priority_desc")String priority_desc,
+//                                                        @RequestParam("demand_status")String demand_status, @RequestParam("batch")String batch,
+//                                                        @RequestParam("business_department")String business_department, @RequestParam("business_team")String business_team,
+//                                                        @RequestParam("leadOrCooperate")String leadOrCooperate, @RequestParam("version_status")String version_status,
+//                                                        @RequestParam("development_model")String development_model, @RequestParam("product_name")String product_name,
+//                                                        @RequestParam("task_code")String task_code, @RequestParam("project_code")String project_code,
+//                                                        @RequestParam("is_newAddResources")String is_newAddResources, @RequestParam("is_dataTransfer")String is_dataTransfer,
+//                                                        @RequestParam("is_performanceTest")String is_performanceTest,@RequestParam("task_type")String task_type,
+//                                                        @ModelAttribute("role") String role, HttpServletRequest request)
+    public Map<String,Object> getAllRecordListByFilters(String demand_id, String demand_name,
+                                                        String priority, String priority_desc,
+                                                        String demand_status, String batch,
+                                                        String business_department,String business_team,
+                                                        String leadOrCooperate, String version_status,
+                                                        String development_model, String product_name,
+                                                        String task_code, String project_code,
+                                                        String is_newAddResources, String is_dataTransfer,
+                                                        String is_performanceTest,String task_type,
+                                                         String role, HttpServletRequest request)
+       {
+        // 页码和每页记录的条数
+        String start = request.getParameter("page");
+        String rows = request.getParameter("rows");
+
+        Map<String,Object> json_RowsDataWithTotalNumbers = new HashMap<String,Object>();
+        if(demand_id == null && demand_name==null && priority==null &&priority_desc ==null && demand_status==null &&
+                batch==null && business_department==null && business_team==null && leadOrCooperate==null &&
+                version_status==null && development_model==null && product_name==null && task_code==null &&
+                 project_code==null &&  is_newAddResources==null && is_dataTransfer==null &&  is_performanceTest==null
+                && task_type==null){
+            json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecord(start,rows);
+        }else{
+            json_RowsDataWithTotalNumbers = requirementChangeRecordService.findAllRequirementsRecordByFilters(start,rows,
+                    demand_id, demand_name, priority,  priority_desc.trim(), demand_status,  batch, business_department,  business_team,
+                    leadOrCooperate,  version_status, development_model,  product_name, task_code,  project_code, is_newAddResources,
+                    is_dataTransfer, is_performanceTest, task_type, role);
+        }
+        System.out.println("demand_name 是："+demand_name);
+        System.out.println("模糊查询获取的数据为: "+json_RowsDataWithTotalNumbers);
+
+        return json_RowsDataWithTotalNumbers;
+    }
+
 
     @RequestMapping(value = "/getThisHistoryRecordList")
     @ResponseBody
