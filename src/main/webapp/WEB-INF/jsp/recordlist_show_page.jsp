@@ -232,6 +232,12 @@
                 handler: function(){
                     viewThisRecordHistoryList();
                 }
+            },'-',{
+                text:"该页导出为Excel",
+                iconCls: 'icon-save',
+                handler: function(){
+                    exportTOExcel();
+                }
             }],
             striped:true, // 条纹化，奇偶行不同背景
             singleSelect: false, <%-- 多行选择--%>
@@ -475,6 +481,10 @@
     function addRecord() {
         var nextUrl = "/requirementManage/gotoRecordAdd";
         window.location.href = nextUrl;
+    }
+
+    function exportTOExcel() {
+        $("#dataList").datagrid('toExcel','records.xlsx');
     }
 
     function viewThisRecordHistoryList(){

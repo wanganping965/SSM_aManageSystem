@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="${pageContext.request.contextPath }/resources/easyui/themes/icon.css"/>">
     <script type="text/javascript" src="<c:url value="${pageContext.request.contextPath }/resources/easyui/jquery.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="${pageContext.request.contextPath }/resources/easyui/jquery.easyui.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="${pageContext.request.contextPath }/resources/easyui/datagrid-export.js"/>"></script>
 
 </head>
 <body>

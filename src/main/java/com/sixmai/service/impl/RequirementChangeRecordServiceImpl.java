@@ -161,7 +161,10 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
                 String[] priority_desc_list = priority_desc.split(",|，");//后台数据库里面该字段的设置标准，第一个,号之前没有可用值
 
                 String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
+                System.out.println("当前类的classpath是："+classpath);
                 String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
+                System.out.println("替换之后的当前类的classpath是："+webappRoot);
+
                 String json_path = webappRoot + "combobox_data.json";
 
                 // 读取文件中的json内容
