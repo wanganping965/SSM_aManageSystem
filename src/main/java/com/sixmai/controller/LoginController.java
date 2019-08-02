@@ -98,4 +98,11 @@ public class LoginController {
         mv.setViewName("addUser");
         return mv;
     }
+
+    @RequestMapping("/gotoLeadingExcelkPage")
+    public String gotoLeadingExcelkPage()
+    {
+        return "leadingExcel";
+    }
+
 }

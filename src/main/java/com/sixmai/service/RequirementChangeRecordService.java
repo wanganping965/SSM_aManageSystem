@@ -30,6 +30,22 @@ public interface RequirementChangeRecordService {
                                  String shedule_functionTestVersion_finish, String shedule_officialVersion_submit,
                                  String data_of_production, String lastest_progress, String description,
                                  String team_responsible_for, String user_last_changed,String record_update_time);
+
+    boolean setRequirementRecordByExcelData(String demand_id, String demand_name, String demand_details,
+                                 String demand_class, String demand_content, String priority,
+                                 String priority_desc, String business_value, String demand_status,
+                                 String batch, String business_department, String business_team,
+                                 String leadOrCooperate, String product_name, String version_status,
+                                 String workload, String external_workload, String vender_workload,
+                                 String development_model, String main_product_situation,
+                                 String demand_leader, String development_leader, String task_code,
+                                 String project_code, String is_newAddResources, String is_dataTransfer,
+                                 String is_performanceTest, String update_date, String technicalPlan_desc,
+                                 String task_type, String UAT_versionNumber, String official_versionNumber,
+                                 String shedule_functionTestVersion_submit,
+                                 String shedule_functionTestVersion_finish, String shedule_officialVersion_submit,
+                                 String data_of_production, String lastest_progress, String description,
+                                 String team_responsible_for, String user_last_changed,String record_update_time);
     // *********************** 查看 ***********************
     Map<String,Object> findAllRequirementsRecord(String page, String rows, String role);
     Map<String,Object> findAllRequirementsRecordByFilters(String page, String rows,String demand_id, String demand_name,

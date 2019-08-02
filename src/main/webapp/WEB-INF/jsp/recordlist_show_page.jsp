@@ -177,6 +177,32 @@
     </ul>
 
     <a id="btn_search" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">按条件查询</a>
+    <form action="/exportExcel/getFilterRecordExpertToExcel" id="download_form" method="post" class="" style="display: inline;">
+        <%--hidden存值区域--%>
+        <input type="hidden" class="temp-value-kept" id="demandId-value" name="demand_id" value="">
+        <input type="hidden" class="temp-value-kept" id="demandName-value" name="demand_name"  value="">
+        <input type="hidden" class="temp-value-kept" id="priority-value" name="priority" value="0">
+        <input type="hidden" class="temp-value-kept" id="priorityDesc-value" name="priority_desc" value="0">
+        <input type="hidden" class="temp-value-kept" id="demandStatus-value" name="demand_status"  value="0">
+
+        <input type="hidden" class="temp-value-kept" id="batch-value" name="batch"  value="0">
+        <input type="hidden" class="temp-value-kept" id="businessDepartment-value" name="business_department"  value="">
+        <input type="hidden" class="temp-value-kept" id="businessTeam-value" name="business_team" value="">
+        <input type="hidden" class="temp-value-kept" id="leadOrCooperate-value" name="leadOrCooperate"  value="0">
+        <input type="hidden" class="temp-value-kept" id="versionStatus-value" name="version_status"  value="0">
+
+        <input type="hidden" class="temp-value-kept" id="developmentModel-value" name="development_model"  value="0">
+        <input type="hidden" class="temp-value-kept" id="productName-value" name="product_name"  value="">
+        <input type="hidden" class="temp-value-kept" id="taskCode-value" name="task_code"  value="">
+        <input type="hidden" class="temp-value-kept" id="projectCode-value" name="project_code"  value="">
+        <input type="hidden" class="temp-value-kept" id="isNewAddResources-value" name="is_newAddResources"  value="2">
+
+        <input type="hidden" class="temp-value-kept" id="isDataTransfer-value" name="is_dataTransfer" value="2">
+        <input type="hidden" class="temp-value-kept" id="is_performanceTest-value" name="is_performanceTest" value="2">
+        <input type="hidden" class="temp-value-kept" id="taskType-value" name="task_type"  value="0">
+
+        <input type="button" class="easyui-linkbutton" data-options="iconCls:'icon-save'" id="expert_excel" value="导出数据"/>
+    </form>
 </div>
 <div id="content"  style="">
     <table id="dataList" class="easyui-datagrid">
@@ -232,11 +258,19 @@
                 handler: function(){
                     viewThisRecordHistoryList();
                 }
-            },'-',{
-                text:"该页导出为Excel",
-                iconCls: 'icon-save',
+            }
+//            ,'-',{
+//                text:"多条件查询后导出为Excel",
+//                iconCls: 'icon-save',
+//                handler: function(){
+//                    exportTOExcel();
+//                }
+//            }
+            ,'-',{
+                text:"通过Excel导入数据",
+                iconCls: 'icon-add',
                 handler: function(){
-                    exportTOExcel();
+                    importDataFromExcel();
                 }
             }],
             striped:true, // 条纹化，奇偶行不同背景
@@ -483,26 +517,17 @@
         window.location.href = nextUrl;
     }
 
+    // 将当前满足条件的记录导出到excel中，并下载(form表格方式提交)
+    $("#expert_excel").on('click',function () {
+        console.log("hello,i was clicked! for download");
+        $("#download_form").submit();
+    })
+
+    // 将当前满足条件的记录导出到excel中，并下载（ajax方式提交，不可用）
     function exportTOExcel() {
-        $("#dataList").datagrid('toExcel','records.xlsx');
-    }
+        //   $("#dataList").datagrid('toExcel','records.xls');
 
-    function viewThisRecordHistoryList(){
-        var datagrid = $('#dataList');
-        //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
-        var row = datagrid.datagrid("getChecked");
-        if(row.length == 1){
-            var nextUrl = "/requirementManage/gotoRecordHistoryList?demand_id="+row[0].demand_id;
-            window.location.href = nextUrl;
-        }else if(row.length == 0){
-            $.messager.alert('提示','您还未选择记录！',"info");
-        }else{
-            $.messager.alert('提示','您选择超过一条记录！',"info");
-        }
-    }
-
-
-    $("#btn_search").bind("click",function () {
+        //   获取当前页面的条件搜索条件
         var demand_id5 = $("#demand_id5").val();
         var demand_name5 = $("#demand_name5").val();
         var priority5 = $("#priority5").val();
@@ -525,7 +550,107 @@
         var is_performanceTest5 = $("#is_performanceTest5").val();
         var task_type5 = $("#task_type5").val();
 
-        console.log("five, i am here!");
+        $.ajax({
+            url:"/exportExcel/getFilterRecordExpertToExcel",
+            type:"post",
+            data:{
+                'demand_id':demand_id5,
+                'demand_name':demand_name5,
+                'priority':priority5,
+                'priority_desc':priority_desc5,
+                'demand_status':demand_status5,
+                'batch':batch5,
+                'business_department':business_department5,
+                'business_team':business_team5,
+                'leadOrCooperate':leadOrCooperate5,
+                'version_status':version_status5,
+                'development_model':development_model5,
+                'product_name':product_name5,
+                'task_code':task_code5,
+                'project_code':project_code5,
+                'is_newAddResources':is_newAddResources5,
+                'is_dataTransfer':is_dataTransfer5,
+                'is_performanceTest':is_performanceTest5,
+                'task_type':task_type5
+            },
+            success:function (data) {
+                if(data == "success"){
+                    $.messager.alert('提示','按当前条件下载记录到Excel成功！',"info");
+                }
+                else{
+                    $.messager.alert('提示','信息导出失败！',"error");
+                }
+            }
+        })
+    }
+
+//    跳转到Excel数据导入页
+    function importDataFromExcel(){
+        var nextUrl = "/login/gotoLeadingExcelkPage";
+        window.location.href = nextUrl;
+    }
+    function viewThisRecordHistoryList(){
+        var datagrid = $('#dataList');
+        //getChecked:在复选框呗选中的时候返回所有行。（该方法自1.3版开始可用）
+        var row = datagrid.datagrid("getChecked");
+        if(row.length == 1){
+            var nextUrl = "/requirementManage/gotoRecordHistoryList?demand_id="+row[0].demand_id;
+            window.location.href = nextUrl;
+        }else if(row.length == 0){
+            $.messager.alert('提示','您还未选择记录！',"warning");
+        }else{
+            $.messager.alert('提示','您选择超过一条记录！',"warning");
+        }
+    }
+
+
+    $("#btn_search").bind("click",function () {
+        //获取搜索框的值
+        var demand_id5 = $("#demand_id5").val();
+        var demand_name5 = $("#demand_name5").val();
+        var priority5 = $("#priority5").val();
+        var priority_desc5 = $("#priority_desc5").val();
+        var demand_status5 = $("#demand_status5").val();
+
+        var batch5 = $("#batch5").val();
+        var business_department5 = $("#business_department5").val();
+        var business_team5 = $("#business_team5").val();
+        var leadOrCooperate5 = $("#leadOrCooperate5").val();
+        var version_status5 = $("#version_status5").val();
+
+        var development_model5 = $("#development_model5").val();
+        var product_name5 = $("#product_name5").val();
+        var task_code5 = $("#task_code5").val();
+        var project_code5 = $("#project_code5").val();
+        var is_newAddResources5 = $("#is_newAddResources5").val();
+
+        var is_dataTransfer5 = $("#is_dataTransfer5").val();
+        var is_performanceTest5 = $("#is_performanceTest5").val();
+        var task_type5 = $("#task_type5").val();
+
+        //将搜索框的值复制到数据表格下载的form中的hidden的input框中来,以提供进行数据下载时候的条件参数
+        $("#demandId-value").val(demand_id5);
+        $("#demandName-value").val(demand_name5);
+        $("#priority-value").val(priority5);
+        $("#priorityDesc-value").val(priority_desc5);
+        $("#demandStatus-value").val(demand_status5);
+
+        $("#batch-value").val(batch5);
+        $("#businessDepartment-value").val(business_department5);
+        $("#businessTeam-value").val(business_team5);
+        $("#leadOrCooperate-value").val(leadOrCooperate5);
+        $("#versionStatus-value").val(version_status5);
+
+        $("#developmentModel-value").val(development_model5);
+        $("#productName-value").val(product_name5);
+        $("#taskCode-value").val(task_code5);
+        $("#projectCode-value").val(project_code5);
+        $("#isNewAddResources-value").val(is_newAddResources5);
+
+        $("#isDataTransfer-value").val(is_dataTransfer5);
+        $("#is_performanceTest-value").val(is_performanceTest5);
+        $("#taskType-value").val(task_type5);
+//        console.log("five, i am here!");
 
         $("#dataList").datagrid('load',{
             demand_id:demand_id5,
@@ -547,54 +672,6 @@
             is_performanceTest:is_performanceTest5,
             task_type:task_type5
         })
-//        //page页码
-//        var page11 = ''+$("#dataList").datagrid('options').pageNumber;
-//        //rows每页记录条数  
-//        var rows11 = ''+$("#datalist").datagrid('options').pageSize;
-
-//        var search_url = "/requirementManage/getAllRecordListByFilters?";
-//        search_url += 'demand_id='+demand_id5 + '&demand_name='+demand_name5+'&priority='+priority5+'&priority_desc='+priority_desc5;
-//        search_url += 'demand_status='+demand_status5 + '&batch='+batch5+'&business_department='+business_department5+'&business_team='+business_team5;
-//        search_url += 'leadOrCooperate='+leadOrCooperate5 + '&version_status='+version_status5+'&development_model='+development_model5+'&product_name='+product_name5;
-//        search_url += 'task_code='+task_code5 + '&project_code='+project_code5+'&is_newAddResources='+is_newAddResources5+'&is_dataTransfer='+is_dataTransfer5;
-//        search_url += 'is_performanceTest='+is_performanceTest5 + '&task_type='+task_type5;
-//
-////        重载datagrid的url参数
-//        $("#dataList").datagrid("options").url = search_url;
-//        $("#datalist").datagrid("reload");
-
-//        $.ajax({
-//            url:'/requirementManage/getAllRecordListByFilters',
-//            type:'POST',
-//            data:{
-//                'demand_id':demand_id5,
-//                'demand_name':demand_name5,
-//                'priority':priority5,
-//                'priority_desc':priority_desc5,
-//
-//                'demand_status':demand_status5,
-//                'batch':batch5,
-//                'business_department':business_department5,
-//                'business_team':business_team5,
-//
-//                'leadOrCooperate':leadOrCooperate5,
-//                'version_status':version_status5,
-//                'development_model':development_model5,
-//                'product_name':product_name5,
-//
-//                'task_code':task_code5,
-//                'project_code':project_code5,
-//                'is_newAddResources':is_newAddResources5,
-//                'is_dataTransfer':is_dataTransfer5,
-//
-//                'is_performanceTest':is_performanceTest5,
-//                'task_type':task_type5
-//            },
-//            dataType:'json',
-//            success:function (data) {
-//                $('#dataList').datagrid('loadData',data);
-//            }
-//        })
     })
 </script>
 </body>

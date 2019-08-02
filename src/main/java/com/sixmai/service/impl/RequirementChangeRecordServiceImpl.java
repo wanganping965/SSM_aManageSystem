@@ -14,12 +14,29 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static java.util.Arrays.asList;
 /**
  * Created by 未来人来xw on 2019/7/18.
  */
 @Service("requirementChangeRecordServiceImpl")
 public class RequirementChangeRecordServiceImpl implements RequirementChangeRecordService {
+
+
+    private final static List<String> priority_description_list = asList("业务部门年度重点工作", "业务部门绩效目标", "行领导关注", "业务负责人关注", "监管要求");
+    private final static List<String> priority_list=asList("高","中","低");
+    private final static List<String> demand_status_list=asList("意向需求","方案制定中","已回函，待排期","任务已下达","需求取消");
+    private final static List<String> batch_list=asList("X91","X92","P901","X93","X94","P902","X95","X96","X97", "P903","X98","X99","X910","P904","X911","X912","待排期");
+    private final static List<String> leadOrCooperate_list=asList("牵头","配合");
+    private final static List<String> version_status_list=asList("有版本","配合测试");
+    private final static List<String> development_model_list=asList("自主开发","厂商开发","合作开发");
+    private final static List<String> is_newAddResources_list=asList("否","是");
+    private final static List<String> is_performanceTest_list=asList("否","是");
+    private final static List<String> is_dataTransfer_list=asList("否","是");
+    private final static List<String> task_type_list=asList("项目","项目需求变更","维护需求变更","技术支持","联调测试","版本追平");
+
 
     RequirementChangeRecordMapper requirementChangeRecordMapper;
 
@@ -29,8 +46,13 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
     }
 
     private String dateFormatterTransfer(String before) {
-        String[] m_d_y = before.split("/");
+        String[] m_d_y = before.split("-|/");
         return m_d_y[2] + "-" + m_d_y[0] + "-" + m_d_y[1];
+    }
+
+    private String dateFormatterTransferForExcelDateColumns(String before) {
+        String[] m_d_y = before.split("-|/");
+        return m_d_y[0] + "-" + m_d_y[1] + "-" + m_d_y[2];
     }
 
     /**
@@ -80,20 +102,15 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
 //        List<RequirementChangeRecord> recordList = requirementChangeRecordMapper.findRequirementRecordsByDemand_id(demand_id);
 //        if(recordList.size() == 0){
         String classpath = this.getClass().getResource("/").getPath().replaceFirst("/", "");
-        System.out.println("classpath is: " + classpath);
         String webappRoot = classpath.replaceAll("WEB-INF/classes/", "");
-        System.out.println("webappRoot is: " + webappRoot);
         String json_path = webappRoot + "combobox_data.json";
-
-        //TODO 读取文件中的json内容
+        // 读取文件中的json内容
         String json_str = readJsonFile(json_path);
-        System.out.println(">>>>>>>>The json string's content is: "+json_str);
-//TODO
-//        TODO
-//        List<Map<String,Object>> listMap = JSON.parseObject(json_str,new TypeReference<List<Map<String,Object>>(){});
+
+
         List<Map<String,Object>> json_format = (List<Map<String,Object>>) JSONArray.parse(json_str);
 
-        System.out.println("the json file read content is: "+json_format);
+//        System.out.println("the json file read content is: "+json_format);
         String[] priority_desc_list = priority_desc.split(",|，");
         String res_desc = "";
 
@@ -133,6 +150,130 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
 
         // 不管是修改还是新增，实际都是在表中新增了一条记录
         //每次展示的都是上一次最新修改的记录
+        requirementChangeRecordMapper.addRequirementRecord(record);
+        return true;
+    }
+
+    /**1、至少匹配一个汉字的写法。
+    2、这两个unicode值正好是Unicode表中的汉字的头和尾。
+    3、"[]"代表里边的值出现一个就可以，后边的“+”代表至少出现1次，合起来即至少匹配一个汉字。
+    */
+    public static String getChinese(String paramValue) {
+        String regex = "([\u4e00-\u9fa5]+)";
+        String str = "";
+        Matcher matcher = Pattern.compile(regex).matcher(paramValue);
+        while (matcher.find()) {
+            str+= matcher.group(0);
+        }
+        return str;
+    }
+
+
+    @Override
+    public boolean setRequirementRecordByExcelData(String demand_id, String demand_name, String demand_details,
+                                                   String demand_class, String demand_content, String priority,
+                                                   String priority_desc, String business_value, String demand_status,
+                                                   String batch, String business_department, String business_team,
+                                                   String leadOrCooperate, String product_name, String version_status,
+                                                   String workload, String external_workload, String vender_workload,
+                                                   String development_model, String main_product_situation,
+                                                   String demand_leader, String development_leader, String task_code,
+                                                   String project_code, String is_newAddResources, String is_dataTransfer,
+                                                   String is_performanceTest, String update_date, String technicalPlan_desc,
+                                                   String task_type, String UAT_versionNumber, String official_versionNumber,
+                                                   String shedule_functionTestVersion_submit, String shedule_functionTestVersion_finish,
+                                                   String shedule_officialVersion_submit, String date_of_production, String lastest_progress,
+                                                   String description, String team_responsible_for, String user_last_changed,
+                                                   String record_update_time) {
+        RequirementChangeRecord record = new RequirementChangeRecord();
+
+        //b表格中数据格式转化为数据库中的数据格式
+        int priority_index = priority_list.indexOf(priority);
+        if(priority_index == -1){
+            System.out.println("优先级--数据列存在数据错误");
+            return false;
+        }
+        String[] priority_deses= priority_desc.split(",|,|；|;");
+        String priority_desc_res = "";
+        for(int y = 0;y < priority_deses.length;y ++){
+            int tmp = priority_description_list.indexOf(getChinese(priority_deses[y]));
+            if(tmp != -1)
+                priority_desc_res += ","+(tmp + 1);
+            else{
+                priority_desc_res += ","+getChinese(priority_deses[y]);
+            }
+        }
+
+        int demand_status_index =demand_status_list.indexOf(demand_status);
+        if(demand_status_index == -1){
+            System.out.println("需求状态--数据列存在数据错误");
+            return false;
+        }
+        int batch_index = batch_list.indexOf(batch);
+        if(batch_index == -1)
+        {
+            System.out.println("批次--数据列存在数据错误");
+            return false;
+        }
+        int leadOrCooperate_index = leadOrCooperate_list.indexOf(leadOrCooperate);
+        if (leadOrCooperate_index == -1){
+            System.out.println("牵头/配合--数据列存在数据错误");
+            return false;
+        }
+        int version_status_index = version_status_list.indexOf(version_status);
+        if (version_status_index == -1){
+            System.out.println("版本状态--数据列存在数据错误");
+            return false;
+        }
+        int development_model_index = development_model_list.indexOf(development_model);
+        if (development_model_index == -1){
+            System.out.println("开发模式--数据列存在数据错误");
+            return false;
+        }
+        int is_newAddResources_index =is_newAddResources_list.indexOf(is_newAddResources);
+        if (is_newAddResources_index == -1){
+            System.out.println("是否新增数据--数据列存在数据错误");
+            return false;
+        }
+        int is_dataTransfer_index =is_dataTransfer_list.indexOf(is_dataTransfer);
+        if (is_dataTransfer_index == -1){
+            System.out.println("是否数据迁移--数据列存在数据错误");
+            return false;
+        }
+        int is_performanceTest_index =is_performanceTest_list.indexOf(is_performanceTest);
+        if (is_performanceTest_index == -1){
+            System.out.println("是否性能测试--数据列存在数据错误");
+            return false;
+        }
+        int task_type_index = task_type_list.indexOf(task_type);
+        if (task_type_index == -1){
+            System.out.println("任务类型--数据列存在数据错误");
+            return false;
+        }
+
+//        System.out.println("分割之后的时间组合的时间是："+ dateFormatterTransfer(update_date));
+//        TODO 数据转化，excel表到数据库
+        record.setAll(0, demand_id, demand_name, demand_details,
+                demand_class, demand_content, priority_index+1,
+                priority_desc_res, business_value, demand_status_index+1,
+                batch_index+1, business_department, business_team,
+                leadOrCooperate_index+1, product_name, version_status_index+1,
+                workload, external_workload, vender_workload,
+                development_model_index+1, main_product_situation,
+                demand_leader, development_leader, task_code,
+                project_code, is_newAddResources_index, is_dataTransfer_index,
+                is_performanceTest_index,
+                java.sql.Date.valueOf(dateFormatterTransferForExcelDateColumns(update_date)),
+                technicalPlan_desc,
+                task_type_index, UAT_versionNumber,
+                official_versionNumber,
+                java.sql.Date.valueOf(dateFormatterTransferForExcelDateColumns(shedule_functionTestVersion_submit)),
+                java.sql.Date.valueOf(dateFormatterTransferForExcelDateColumns(shedule_functionTestVersion_finish)),
+                java.sql.Date.valueOf(dateFormatterTransferForExcelDateColumns(shedule_officialVersion_submit)),
+                java.sql.Date.valueOf(dateFormatterTransferForExcelDateColumns(date_of_production)), lastest_progress, description,
+                Integer.parseInt(team_responsible_for), user_last_changed,
+                java.sql.Timestamp.valueOf(record_update_time));
+
         requirementChangeRecordMapper.addRequirementRecord(record);
         return true;
     }

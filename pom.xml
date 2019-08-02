@@ -136,6 +136,34 @@
       <version>${jackson.version}</version>
     </dependency>
 
+    <!--数据导入导出excel-->
+      <dependency>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi</artifactId>
+          <version>3.16</version>
+      </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>3.16</version>
+    </dependency>
+      <dependency>
+          <groupId>commons-pool</groupId>
+          <artifactId>commons-pool</artifactId>
+          <version>1.6</version>
+      </dependency>
+      <!-- file upload part -->
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>1.4</version>
+      </dependency>
+      <dependency>
+          <groupId>commons-fileupload</groupId>
+          <artifactId>commons-fileupload</artifactId>
+          <version>1.2.2</version>
+      </dependency>
+
     <!--org.apache.commons.collections.CollectionUtils的包必须是3.1以上依赖;-->
     <dependency>
       <groupId>commons-collections</groupId>
@@ -150,6 +178,8 @@
         <artifactId>junit</artifactId>
         <version>4.12</version>
     </dependency>
+
+
   </dependencies>
 
   <!--有时候不添加下面这段代码会报mybatis的错，找不到mapping文件 所以最好加上-->

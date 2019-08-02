@@ -72,7 +72,9 @@
 					success:function(data){
 				        if(data == "login_success"){
 				            var nextUrl = "/requirementManage/gotoRecordList";
-				            window.location.href = nextUrl;
+//                            var nextUrl = "/login/gotoLeadingExcelkPage";
+
+                            window.location.href = nextUrl;
 						}else{
 				            var errormsg="";
 				            if(data == "noUser"){

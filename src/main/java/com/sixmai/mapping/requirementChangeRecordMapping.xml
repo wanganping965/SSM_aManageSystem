@@ -85,10 +85,74 @@
               </where>
               ORDER BY record_update_time DESC limit 10000000000) t
         GROUP BY t.demand_id
-        limit #{start},#{rows}
-        ;
+        limit #{start},#{rows};
 
         SELECT found_rows() AS recordCounts;
+    </select>
+
+    <select id="findAllRequirementBYFiltersWithoutPages" resultType="com.sixmai.domain.RequirementChangeRecord">
+        SELECT t.*
+        FROM (SELECT * FROM requirementChangeRecord
+        <where>
+            team_responsible_for=#{role}
+            <if test="demand_id != null and demand_id != ''">
+                and demand_id = #{demand_id}
+            </if>
+            <if test="demand_name != null and demand_name != ''">
+                and demand_name LIKE CONCAT('%',#{demand_name},'%')
+            </if>
+            <if test="priority != 0">
+                and priority = #{priority}
+            </if>
+            <if test=' priority_desc != "0" '>
+                and priority_desc LIKE CONCAT('%',',',#{priority_desc},'%')
+            </if>
+            <if test="demand_status != 0">
+                and demand_status = #{demand_status}
+            </if>
+            <if test="batch != 0">
+                and batch = #{batch}
+            </if>
+            <if test="business_department != null and business_department != ''">
+                and business_department LIKE CONCAT('%',#{business_department},'%')
+            </if>
+            <if test="business_team != null and business_team != ''">
+                and business_team LIKE CONCAT('%',#{business_team},'%')
+            </if>
+            <if test="leadOrCooperate != 0">
+                and leadOrCooperate = #{leadOrCooperate}
+            </if>
+            <if test="version_status != 0">
+                and version_status = #{version_status}
+            </if>
+            <if test="development_model != 0">
+                and development_model = #{development_model}
+            </if>
+            <if test="product_name != null and product_name != ''">
+                and product_name LIKE CONCAT('%',#{product_name},'%')
+            </if>
+            <if test="task_code != null and task_code != ''">
+                and task_code LIKE CONCAT('%',#{task_code},'%')
+            </if>
+            <if test="project_code != null and project_code != ''">
+                and project_code LIKE CONCAT('%',#{project_code},'%')
+            </if>
+
+            <if test="is_newAddResources != 2">
+                and is_newAddResources = #{is_newAddResources}
+            </if>
+            <if test="is_dataTransfer != 2">
+                and is_dataTransfer = #{is_dataTransfer}
+            </if>
+            <if test="is_performanceTest != 2">
+                and is_performanceTest = #{is_performanceTest}
+            </if>
+            <if test="task_type != 0">
+                and task_type = #{task_type}
+            </if>
+        </where>
+        ORDER BY record_update_time DESC limit 10000000000) t
+        GROUP BY t.demand_id;
     </select>
 
     <select id="findRequirementRecordsByDemand_id" resultMap="RequirementChangeRecord,recordCounts">
