@@ -27,6 +27,7 @@
             text-align: center;
         }
     </script>
+    <script type="text/javascript" src="<c:url value="${pageContext.request.contextPath }/resources/static/js/inputValueCheck.js"/>"></script>
 
 </head>
 <body>
@@ -332,70 +333,83 @@
 
             $('#btn_keep').bind('click',function(){
 //             数据修改
-                $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">新增该条需求？</span>',function (r) {
-                    if(r){
+                if (valueChecked($("#demandId2").val().trim(),$("#demandName2").val().trim(),$("#demandDetails2").val().trim(),
+                        $("#demandClass2").val().trim(),$("#demandContent2").val().trim(),$("#priority_desc").val().trim(),$("#businessValue2").val().trim(),
+                        $("#businessDepartment2").val().trim(),$("#businessTeam2").val().trim(),$("#productName2").val().trim(),$("#workload2").val().trim(),
+                        $("#externalWorkload2").val().trim(),$("#venderWorkload2").val().trim(),$("#mainProductSituation2").val().trim(),
+                        $("#demandLeader2").val().trim(),$("#developmentLeader2").val().trim(),$("#taskCode2").val().trim(),$("#projectCode2").val().trim(),
+                        $("#technicalPlanDesc2").val().trim(),$("#UAT_versionNumber2").val().trim(),$("#officialVersionNumber2").val().trim(),
+                        $("#lastestProgress2").val().trim(),$("#description2").val().trim()) &&
+                    relateDateChecked($("#sheduleFunctionTestVersionSubmit3").datebox("getValue").toString().trim(),
+                        $("#sheduleFunctionTestVersionFinish3").datebox("getValue").toString().trim(),
+                        $("#sheduleOfficialVersionSubmit3").datebox("getValue").toString().trim(),
+                        $("#dateOfProduction3").datebox("getValue").toString().trim(),2)){
+                    $.messager.confirm('确定','是否确定<span style="color: red;font-size: 20px;">新增该条需求？</span>',function (r) {
+                        if(r){
 //                        var id = $("#textbox-id-value").val();
 //                        var rowIndex = $('#dataList').datagrid('getRowIndex', parseInt(id));//id是关键字值
 //                        var data = $('#dataList').datagrid('getData').rows[rowIndex];
 
-                        $.ajax({
-                            url:'/requirementManage/updateThisRequirementRecord',
-                            type:'post',
-                            data:{
-                                'demand_id':$("#demandId2").val(),
-                                'demand_name':$("#demandName2").val(),
-                                'demand_details':$("#demandDetails2").val(),
-                                'demand_class':$("#demandClass2").val(),
-                                'demand_content':$("#demandContent2").val(),
-                                'priority':$("#priority1").val().toString(),
-                                'priority_desc':$("#priority_desc").val(),
-                                'business_value':$("#businessValue2").val(),
-                                'demand_status':$("#demandStatus1").val().toString(),
-                                'batch':$("#batch1").val().toString(),
-                                'business_department':$("#businessDepartment2").val(),
-                                'business_team':$("#businessTeam2").val(),
-                                'leadOrCooperate':$("#leadOrCooperate1").val().toString(),
-                                'product_name':$("#productName2").val(),
-                                'version_status':$("#versionStatus1").val().toString(),
-                                'workload':$("#workload2").val(),
-                                'external_workload':$("#externalWorkload2").val(),
-                                'vender_workload':$("#venderWorkload2").val(),
-                                'development_model':$("#developmentModel1").val().toString(),
-                                'main_product_situation':$("#mainProductSituation2").val(),
-                                'demand_leader':$("#demandLeader2").val(),
-                                'development_leader':$("#developmentLeader2").val(),
-                                'task_code':$("#taskCode2").val(),
-                                'project_code':$("#projectCode2").val(),
-                                'is_newAddResources':$("#isNewAddResources1").val().toString(),
-                                'is_dataTransfer':$("#isDataTransfer1").val().toString(),
-                                'is_performanceTest':$("#isPerformanceTest1").val().toString(),
-                                'update_date':$("#updateDate3").datebox("getValue").toString(),
-                                'technicalPlan_desc':$("#technicalPlanDesc2").val(),
-                                'task_type':$("#taskType1").val().toString(),
-                                'UAT_versionNumber':$("#UAT_versionNumber2").val(),
-                                'official_versionNumber':$("#officialVersionNumber2").val(),
-                                'shedule_functionTestVersion_submit':$("#sheduleFunctionTestVersionSubmit3").datebox("getValue").toString(),
-                                'shedule_functionTestVersion_finish':$("#sheduleFunctionTestVersionFinish3").datebox("getValue").toString(),
-                                'shedule_officialVersion_submit':$("#sheduleOfficialVersionSubmit3").datebox("getValue").toString(),
-                                'data_of_production':$("#dateOfProduction3").datebox("getValue").toString(),
-                                'lastest_progress':$("#lastestProgress2").val(),
-                                'description':$("#description2").val()
-                            },
-                            dataType:'text',
-                            success:function (data) {
-                                if(data == 'ok'){
-                                    $.messager.alert("操作提示", "添加成功！返回列表页...","info");
-                                    var nextUrl = "/requirementManage/gotoRecordList";
-                                    window.location.href = nextUrl;
-                                }
-                                else{
-                                    $.messager.alert('提示','添加失败：<br />'+data," info");
+                            $.ajax({
+                                url:'/requirementManage/updateThisRequirementRecord',
+                                type:'post',
+                                data:{
+                                    'demand_id':$("#demandId2").val(),
+                                    'demand_name':$("#demandName2").val(),
+                                    'demand_details':$("#demandDetails2").val(),
+                                    'demand_class':$("#demandClass2").val(),
+                                    'demand_content':$("#demandContent2").val(),
+                                    'priority':$("#priority1").val().toString(),
+                                    'priority_desc':$("#priority_desc").val(),
+                                    'business_value':$("#businessValue2").val(),
+                                    'demand_status':$("#demandStatus1").val().toString(),
+                                    'batch':$("#batch1").val().toString(),
+                                    'business_department':$("#businessDepartment2").val(),
+                                    'business_team':$("#businessTeam2").val(),
+                                    'leadOrCooperate':$("#leadOrCooperate1").val().toString(),
+                                    'product_name':$("#productName2").val(),
+                                    'version_status':$("#versionStatus1").val().toString(),
+                                    'workload':$("#workload2").val(),
+                                    'external_workload':$("#externalWorkload2").val(),
+                                    'vender_workload':$("#venderWorkload2").val(),
+                                    'development_model':$("#developmentModel1").val().toString(),
+                                    'main_product_situation':$("#mainProductSituation2").val(),
+                                    'demand_leader':$("#demandLeader2").val(),
+                                    'development_leader':$("#developmentLeader2").val(),
+                                    'task_code':$("#taskCode2").val(),
+                                    'project_code':$("#projectCode2").val(),
+                                    'is_newAddResources':$("#isNewAddResources1").val().toString(),
+                                    'is_dataTransfer':$("#isDataTransfer1").val().toString(),
+                                    'is_performanceTest':$("#isPerformanceTest1").val().toString(),
+                                    'update_date':$("#updateDate3").datebox("getValue").toString(),
+                                    'technicalPlan_desc':$("#technicalPlanDesc2").val(),
+                                    'task_type':$("#taskType1").val().toString(),
+                                    'UAT_versionNumber':$("#UAT_versionNumber2").val(),
+                                    'official_versionNumber':$("#officialVersionNumber2").val(),
+                                    'shedule_functionTestVersion_submit':$("#sheduleFunctionTestVersionSubmit3").datebox("getValue").toString(),
+                                    'shedule_functionTestVersion_finish':$("#sheduleFunctionTestVersionFinish3").datebox("getValue").toString(),
+                                    'shedule_officialVersion_submit':$("#sheduleOfficialVersionSubmit3").datebox("getValue").toString(),
+                                    'data_of_production':$("#dateOfProduction3").datebox("getValue").toString(),
+                                    'lastest_progress':$("#lastestProgress2").val(),
+                                    'description':$("#description2").val()
+                                },
+                                dataType:'text',
+                                success:function (data) {
+                                    if(data == 'ok'){
+                                        $.messager.alert("操作提示", "添加成功！返回列表页...","info");
+                                        var nextUrl = "/requirementManage/gotoRecordList";
+                                        window.location.href = nextUrl;
+                                    }
+                                    else{
+                                        $.messager.alert('提示','添加失败：<br />'+data," info");
 
+                                    }
                                 }
-                            }
-                        })
-                    }
-                });
+                            })
+                        }
+                    });
+                }
+
             });
 
             $('#btn_cancel').bind('click',function(){

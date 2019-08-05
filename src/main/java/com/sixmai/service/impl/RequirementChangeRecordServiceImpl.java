@@ -713,7 +713,7 @@ public class RequirementChangeRecordServiceImpl implements RequirementChangeReco
         for (int i = 1; i < desc_list.length; i++) {
             // 记录预设的优先级说明选项，哪些被选择
             if (desc_list[i].length() == 1) {
-                tan[Integer.parseInt(desc_list[i])] = true;
+                tan[Integer.parseInt(desc_list[i])-1] = true;
                 desc_res += priority_description[Integer.parseInt(desc_list[i])-1]+"; ";//已有内部说明查询字典获取text
             }
         }
