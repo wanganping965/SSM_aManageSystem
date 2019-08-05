@@ -14,10 +14,20 @@
 <html>
 <head>
     <title>History version of this software demand</title>
+    <script type="text/css">
+        .select_logout_button{
+            position: fixed;/*固定位置*/
+            z-index:99;/*设置优先级显示，保证不会被覆盖*/
+            right:0px; top:0px;  /* 固定在右上角 */
+            text-align: center;
+        }
+    </script>
 </head>
 <body>
 <h2>该需求历史版本列表页</h2>
 <a id="btn" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回列表页</a>
+<a id="btn22" href="/login/logout" class="easyui-linkbutton select_logout_button" data-options="iconCls:'icon-cancel'">登出</a>
+
 <div id="content"  style="">
     <table id="dataList" class="easyui-datagrid">
 

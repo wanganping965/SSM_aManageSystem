@@ -29,15 +29,24 @@
 		<property name="resolveLazily" value="true" />
 	</bean>
 
-	<!-- 拦截器 -->
-	<!-- <mvc:interceptors>
+	<!-- 配置用于跳回登录之前的页面session的拦截器 -->
+	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/**" />
-			<mvc:exclude-mapping path="/user/toLogin*" />
-			<mvc:exclude-mapping path="/user/login*" />
-			<bean class="com.sxt.interceptor.SessionInterceptor"></bean>
+			<!-- 进行拦截：/**表示拦截所有url及其子路径 -->
+			<mvc:mapping path="/login/*" />
+			<mvc:mapping path="/uploadExcel/*" />
+			<mvc:mapping path="/exportExcel/*" />
+			<mvc:mapping path="/requirementManage/*" />
+
+			<!-- 登录验证的时候、注册申请的的时候 不进行拦截 -->
+			<mvc:exclude-mapping path="/login/login" />
+			<!--<mvc:exclude-mapping path="/login/toLogin" />-->
+
+			<bean class="com.sixmai.interceptor.ForwardBeforeLoginInteceptor"></bean>
 		</mvc:interceptor>
-	</mvc:interceptors> -->
+
+	</mvc:interceptors>
+
 
 	<!-- 过滤静态资源 -->
 	<mvc:default-servlet-handler />

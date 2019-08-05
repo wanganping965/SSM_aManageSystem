@@ -56,10 +56,22 @@
             return true;
         }
     </script>
+
+    <script type="text/css">
+        .select_logout_button{
+            position: fixed;/*固定位置*/
+            z-index:99;/*设置优先级显示，保证不会被覆盖*/
+            right:0px; top:0px;  /* 固定在右上角 */
+            text-align: center;
+        }
+    </script>
 </head>
 <body>
     <h2>Excel报表数据上传页</h2>
+
     <a id="btn111" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回首页</a>
+    <a id="btn22" href="/login/logout" class="easyui-linkbutton select_logout_button" data-options="iconCls:'icon-cancel'">登出</a>
+
     <br><br>
     <form method="POST"  enctype="multipart/form-data" id="form1" action="uploadExcel/form">
 

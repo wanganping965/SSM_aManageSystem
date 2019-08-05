@@ -48,12 +48,6 @@ public class LoginController {
         }
         else {
             String msg = new String(map.get("msg").toString());
-//            if(msg.equals("noUser")){
-//
-//            }else if(msg.equals("passwordError")){
-//
-//            }else if(msg.equals("noRoot"))
-
             System.out.println("msg :" + msg);
             return msg;
         }

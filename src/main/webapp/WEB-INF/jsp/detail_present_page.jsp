@@ -20,10 +20,19 @@
 <head>
     <title>需求详情页</title>
 
-
+    <script type="text/css">
+        .select_logout_button{
+            position: fixed;/*固定位置*/
+            z-index:99;/*设置优先级显示，保证不会被覆盖*/
+            right:0px; top:0px;  /* 固定在右上角 */
+            text-align: center;
+        }
+    </script>
 </head>
 <body>
 <a id="btn" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回列表页</a>
+<a id="btn22" href="/login/logout" class="easyui-linkbutton select_logout_button" data-options="iconCls:'icon-cancel'">登出</a>
+
 <div id="content"  style="">
     <div>
         <a id="btn_toUpdatePage" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-edit'">去修订该条记录</a>

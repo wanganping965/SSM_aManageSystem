@@ -28,11 +28,20 @@
             float:left;
         }
         li {display:inline}
+
+        .select_logout_button{
+            position: fixed;/*固定位置*/
+            z-index:99;/*设置优先级显示，保证不会被覆盖*/
+            right:0px; top:0px;  /* 固定在右上角 */
+            text-align: center;
+        }
+
     </style>
 
 </head>
 <body>
 <h2>首页 -- 所有需求列表页面</h2>
+<a id="btn" href="/login/logout" class="easyui-linkbutton select_logout_button" data-options="iconCls:'icon-cancel'">登出</a>
 <%--<a id="btn" href="/requirementManage/gotoRecordList" class="easyui-linkbutton" data-options="iconCls:'icon-back'">返回列表页</a>--%>
 <div id="selectByConditions">
     <p>多条件查询：</p>
